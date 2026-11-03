@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>Driver Quiz | FTC Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">FTC Quiz</a>
+    <span class="season">2026–2027 Season</span>
+  </header>
+  <main>
+    <section id="startScreen" class="home-card quiz-start">
+      <p class="eyebrow">Driver practice</p>
+      <h1>Ready to drive?</h1>
+      <p class="intro">Answer 20 questions about FTC match flow, safe driving, teamwork, and using the Competition Manual. Questions are shuffled each time.</p>
+      <p class="notice"><strong>Rule check:</strong> The manual is the authority for season-specific rules, scoring, and penalties. This practice quiz focuses on general driver knowledge and does not invent BIOBUZZ scoring values.</p>
+      <div class="start-actions">
+        <button id="startButton" class="primary-btn" type="button">Start quiz</button>
+        <a class="secondary-btn link-button" href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener noreferrer">Open official manual</a>
+        <a class="secondary-btn link-button" href="index.html">Back home</a>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="hidden" aria-live="polite">
+      <div class="quiz-header">
+        <p id="progressText" class="progress-text">Question 1 of 20</p>
+        <a class="secondary-btn link-button" href="index.html">Exit to home</a>
+      </div>
+      <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
+      <article class="quiz-card">
+        <p id="questionCategory" class="category-badge">Driver</p>
+        <h1 id="questionText" class="question-text"></h1>
+        <div id="answerChoices" class="choices"></div>
+        <p id="answerFeedback" class="feedback" aria-live="polite"></p>
+      </article>
+      <div class="quiz-footer">
+        <button id="previousButton" class="secondary-btn" type="button">Previous</button>
+        <button id="nextButton" class="primary-btn" type="button">Next</button>
+      </div>
+    </section>
+
+    <section id="resultsScreen" class="home-card hidden" aria-live="polite">
+      <p class="eyebrow">Quiz complete</p>
+      <h1 id="resultHeading">Nice work!</h1>
+      <p id="finalScore" class="final-score"></p>
+      <p id="resultMessage" class="intro"></p>
+      <div id="answerReview" class="review-list"></div>
+      <div class="start-actions">
+        <button id="retryButton" class="primary-btn" type="button">Try again</button>
+        <a class="secondary-btn link-button" href="index.html">Back home</a>
+        <a class="secondary-btn link-button" href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener noreferrer">Review official manual</a>
+      </div>
+    </section>
+  </main>
+  <script src="driverQuestions.js"></script>
+  <script src="driver.js"></script>
+</body>
+</html>
