@@ -6,6 +6,14 @@
   <meta name="theme-color" content="#07111f">
   <title>FTC Quiz</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .role-card { display: flex; flex-direction: column; align-items: center; overflow: hidden; padding: 20px; }
+    .role-art { display: block; width: min(100%, 340px); height: 210px; margin: 0 auto 18px; overflow: hidden; border: 1px solid rgba(92,200,255,.25); border-radius: 18px; background: linear-gradient(145deg, #1a3551, #0b1828); }
+    .role-art svg { display: block; width: 100%; height: 100%; }
+    .role-title { font-size: 1.5rem; }
+    .description { max-width: 24ch; }
+    @media (max-width: 620px) { .role-art { height: 180px; } }
+  </style>
 </head>
 <body>
   <header class="topbar">
@@ -19,13 +27,43 @@
       <p class="intro">Pick a quiz path to practice with your FTC team.</p>
       <div class="roles">
         <a class="role-card" href="#" aria-label="Builder quiz coming soon" aria-disabled="true" onclick="return false">
-          <span class="icon" aria-hidden="true">🔨</span>
+          <span class="role-art" aria-hidden="true">
+            <svg viewBox="0 0 340 210" role="img" focusable="false">
+              <defs>
+                <linearGradient id="hammer-head" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe08a"/><stop offset="1" stop-color="#ff9f43"/></linearGradient>
+                <linearGradient id="hammer-handle" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e8f4ff"/><stop offset="1" stop-color="#8fb7d8"/></linearGradient>
+              </defs>
+              <circle cx="170" cy="105" r="78" fill="#5cc8ff" opacity=".08"/>
+              <path d="M77 155h186" stroke="#5cc8ff" stroke-width="3" stroke-linecap="round" opacity=".35"/>
+              <g transform="rotate(-35 170 105)">
+                <rect x="157" y="91" width="26" height="88" rx="10" fill="url(#hammer-handle)" stroke="#d8eaff" stroke-width="2"/>
+                <path d="M120 59h100v35c0 8-6 14-14 14h-72c-8 0-14-6-14-14V59z" fill="url(#hammer-head)" stroke="#fff0c2" stroke-width="3"/>
+                <path d="M120 59h24v34h-24z" fill="#ffd166" opacity=".8"/>
+                <path d="M156 115h28v8h-28z" fill="#fff" opacity=".25"/>
+              </g>
+              <path d="M76 63l5 11 11 5-11 5-5 11-5-11-11-5 11-5zM260 128l4 8 8 4-8 4-4 8-4-8-8-4 8-4z" fill="#ffc857" opacity=".9"/>
+            </svg>
+          </span>
           <span class="role-title">Builder</span>
           <span class="description">Robot parts and design recognition</span>
           <span class="tag">Coming soon</span>
         </a>
         <a class="role-card" href="driver.html">
-          <span class="icon" aria-hidden="true">🎮</span>
+          <span class="role-art" aria-hidden="true">
+            <svg viewBox="0 0 340 210" role="img" focusable="false">
+              <defs>
+                <linearGradient id="controller-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eaf6ff"/><stop offset="1" stop-color="#9cb8d2"/></linearGradient>
+                <linearGradient id="controller-grip" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8ba9c7"/><stop offset="1" stop-color="#5e7897"/></linearGradient>
+              </defs>
+              <circle cx="170" cy="104" r="80" fill="#5cc8ff" opacity=".08"/>
+              <path d="M72 137c6-35 15-57 37-57h122c22 0 31 22 37 57 4 22-14 34-28 22l-27-23h-86l-27 23c-14 12-32 0-28-22z" fill="url(#controller-body)" stroke="#f2f8ff" stroke-width="4"/>
+              <path d="M91 125h34M108 108v34" stroke="#29445f" stroke-width="9" stroke-linecap="round"/>
+              <circle cx="226" cy="111" r="8" fill="#ff7185"/><circle cx="246" cy="128" r="8" fill="#5cc8ff"/>
+              <circle cx="206" cy="128" r="8" fill="#ffc857"/><circle cx="226" cy="145" r="8" fill="#3ecf8e"/>
+              <rect x="148" y="104" width="44" height="9" rx="4.5" fill="#7892ae"/>
+              <path d="M79 61l5 11 11 5-11 5-5 11-5-11-11-5 11-5zM263 66l4 8 8 4-8 4-4 8-4-8-8-4 8-4z" fill="#ffc857" opacity=".9"/>
+            </svg>
+          </span>
           <span class="role-title">Driver</span>
           <span class="description">Practice match knowledge and driver strategy</span>
           <span class="tag">Start Driver quiz</span>
