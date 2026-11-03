@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">Stealth drive wheel</title><desc id="desc">Gray solid robot wheel with a hexagonal hub bore.</desc>
+  <rect width="400" height="300" rx="24" fill="#f5f7fa"/>
+  <circle cx="200" cy="150" r="116" fill="#293747"/>
+  <circle cx="200" cy="150" r="103" fill="#596879" stroke="#1b2733" stroke-width="12"/>
+  <circle cx="200" cy="150" r="77" fill="#66788b" stroke="#9eacba" stroke-width="5"/>
+  <circle cx="200" cy="150" r="56" fill="#d3dce5" stroke="#263748" stroke-width="8"/>
+  <path d="M200 119l27 15v31l-27 16-27-16v-31z" fill="#30465b" stroke="#182838" stroke-width="5"/>
+  <circle cx="200" cy="150" r="8" fill="#9cc9e8"/>
+  <g fill="#d8e1e9" opacity=".8"><circle cx="200" cy="87" r="5"/><circle cx="263" cy="150" r="5"/><circle cx="200" cy="213" r="5"/><circle cx="137" cy="150" r="5"/></g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">Omni wheel</title><desc id="desc">Robot wheel with small rollers arranged around its circumference.</desc>
+  <rect width="400" height="300" rx="24" fill="#f5f7fa"/>
+  <circle cx="200" cy="150" r="112" fill="#263748" stroke="#162535" stroke-width="9"/>
+  <g fill="#8296a8" stroke="#33485c" stroke-width="4">
+    <rect x="184" y="32" width="32" height="54" rx="15"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(30 200 150)"/>
+    <rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(60 200 150)"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(90 200 150)"/>
+    <rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(120 200 150)"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(150 200 150)"/>
+    <rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(180 200 150)"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(210 200 150)"/>
+    <rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(240 200 150)"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(270 200 150)"/>
+    <rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(300 200 150)"/><rect x="184" y="32" width="32" height="54" rx="15" transform="rotate(330 200 150)"/>
+  </g>
+  <circle cx="200" cy="150" r="55" fill="#d3dce5" stroke="#263748" stroke-width="8"/>
+  <path d="M200 123l24 14v27l-24 14-24-14v-27z" fill="#30465b" stroke="#182838" stroke-width="5"/>
+</svg>

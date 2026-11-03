@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="title desc">
+  <title id="title">Programmable servo</title><desc id="desc">Compact motor housing with output shaft and a servo horn.</desc>
+  <rect width="400" height="300" rx="24" fill="#f5f7fa"/>
+  <path d="M112 98q0-20 20-20h136q20 0 20 20v106q0 20-20 20H132q-20 0-20-20z" fill="#263747" stroke="#152333" stroke-width="8"/>
+  <rect x="133" y="99" width="134" height="101" rx="13" fill="#3d566d"/>
+  <path d="M149 99v-22h102v22" fill="#a8bac9" stroke="#263747" stroke-width="7"/>
+  <circle cx="200" cy="143" r="28" fill="#dce6ee" stroke="#8ea3b6" stroke-width="6"/>
+  <circle cx="200" cy="143" r="10" fill="#354d62"/>
+  <path d="M200 143l75-35q14-7 20 5t-7 19l-78 27z" fill="#e2e9ef" stroke="#697f92" stroke-width="6"/>
+  <circle cx="278" cy="119" r="5" fill="#42596e"/><circle cx="200" cy="181" r="5" fill="#9db2c4"/>
+  <path d="M144 222v16m18-16v16m18-16v16" stroke="#d84b4b" stroke-width="8" stroke-linecap="round"/>
+  <path d="M123 78h-21v-18h21m154 18h21v-18h-21" fill="#a8bac9"/>
+</svg>
