@@ -1,0 +1,22 @@
+* { box-sizing: border-box; }
+:root { color-scheme: dark; --bg: #07111f; --panel: #122338; --panel2: #14283f; --blue: #5cc8ff; --text: #edf6ff; --muted: #a3b8d3; }
+body { margin: 0; min-height: 100vh; padding: 24px 16px 48px; background: linear-gradient(180deg, var(--bg), #0e1d2f); color: var(--text); font-family: Arial, Helvetica, sans-serif; }
+.topbar { max-width: 1100px; margin: 0 auto 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand { color: var(--blue); font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 800; letter-spacing: .04em; text-decoration: none; text-transform: uppercase; }
+.season { color: var(--muted); font-weight: 700; }
+main { max-width: 1100px; margin: 0 auto; }
+.home-card { padding: 40px 24px; text-align: center; background: rgba(18, 35, 56, .92); border: 1px solid rgba(108, 158, 225, .22); border-radius: 24px; box-shadow: 0 18px 40px rgba(0,0,0,.28); }
+.eyebrow { margin: 0 0 10px; color: var(--blue); font-size: .75rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+h1 { margin: 0 0 12px; font-size: clamp(2.1rem, 5vw, 4rem); }
+.intro { max-width: 640px; margin: 0 auto 32px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 22px; max-width: 760px; margin: 0 auto; }
+.role-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 28px 20px; color: var(--text); background: linear-gradient(180deg, var(--panel2), #0f1b30); border: 1px solid rgba(92,200,255,.35); border-radius: 20px; text-decoration: none; transition: transform .15s ease, border-color .15s ease; }
+.role-card:hover, .role-card:focus-visible { transform: translateY(-2px); border-color: var(--blue); outline: none; }
+.role-card:focus-visible { box-shadow: 0 0 0 3px white; }
+.icon { font-size: 2.7rem; }
+.role-title { font-size: 1.7rem; font-weight: 800; }
+.description { color: var(--muted); line-height: 1.5; }
+.tag { margin-top: 6px; padding: 7px 12px; color: var(--blue); background: rgba(92,200,255,.1); border-radius: 999px; font-size: .84rem; font-weight: 700; }
+.footnote { margin: 28px auto 0; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.footnote a { color: var(--blue); }
+@media (max-width: 560px) { body { padding: 18px 12px 32px; } .home-card { padding: 32px 18px; } .season { text-align: right; font-size: .85rem; } }
