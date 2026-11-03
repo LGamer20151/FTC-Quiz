@@ -33,18 +33,20 @@ nextButton.addEventListener('click', () => {
 });
 
 function startQuiz() {
-  if (!Array.isArray(window.driverQuestionBank) || window.driverQuestionBank.length < QUESTIONS_PER_QUIZ) {
+  // driverQuestions.js declares this as a top-level const, not a window property.
+  if (typeof driverQuestionBank === 'undefined' || !Array.isArray(driverQuestionBank) || driverQuestionBank.length < QUESTIONS_PER_QUIZ) {
     questionText.textContent = 'The question bank could not be loaded. Please reload the page.';
     startScreen.classList.remove('hidden');
     return;
   }
-  quizQuestions = shuffle([...window.driverQuestionBank]).slice(0, QUESTIONS_PER_QUIZ);
+  quizQuestions = shuffle([...driverQuestionBank]).slice(0, QUESTIONS_PER_QUIZ);
   currentQuestionIndex = 0;
   answers = Array(quizQuestions.length).fill(null);
   startScreen.classList.add('hidden');
   resultsScreen.classList.add('hidden');
   quizScreen.classList.remove('hidden');
   renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function moveTo(index) {
