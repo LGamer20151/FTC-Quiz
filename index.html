@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="style.css">
   <style>
     .role-card { display: flex; flex-direction: column; align-items: center; overflow: hidden; padding: 20px; }
-    .role-art { display: block; width: min(100%, 340px); height: 210px; margin: 0 auto 18px; overflow: hidden; border: 1px solid rgba(92,200,255,.25); border-radius: 18px; background: linear-gradient(145deg, #1a3551, #0b1828); }
+    .role-art { display: block; width: min(100%, 340px); height: 210px; margin: 0 auto 18px; overflow: hidden; border: 1px solid rgba(92,200,255,.25); border-radius: 18px; background: linear-gradient(135deg, rgba(92,200,255,.06), rgba(255,200,87,.08)); }
     .role-art svg { display: block; width: 100%; height: 100%; }
     .role-title { font-size: 1.5rem; }
     .description { max-width: 24ch; }
@@ -48,6 +48,7 @@
           <span class="description">Identify the BIOBUZZ StarterBot and robot parts</span>
           <span class="tag">Start Builder quiz</span>
         </a>
+
         <a class="role-card" href="driver.html">
           <span class="role-art" aria-hidden="true">
             <svg viewBox="0 0 340 210" role="img" focusable="false">
@@ -67,8 +68,28 @@
           <span class="description">Practice match knowledge and driver strategy</span>
           <span class="tag">Start Driver quiz</span>
         </a>
+
+        <a class="role-card" href="ai.html">
+          <span class="role-art" aria-hidden="true">
+            <svg viewBox="0 0 340 210" role="img" focusable="false">
+              <defs>
+                <linearGradient id="ai-bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#5cc8ff"/><stop offset="1" stop-color="#8a7dff"/></linearGradient>
+              </defs>
+              <circle cx="170" cy="104" r="72" fill="#5cc8ff" opacity=".12"/>
+              <rect x="102" y="70" width="136" height="92" rx="22" fill="url(#ai-bg)" stroke="#dfeeff" stroke-width="3"/>
+              <circle cx="130" cy="103" r="10" fill="#ebf7ff"/>
+              <circle cx="170" cy="103" r="10" fill="#ebf7ff"/>
+              <circle cx="210" cy="103" r="10" fill="#ebf7ff"/>
+              <path d="M116 140c18 18 30 26 54 26 25 0 36-8 54-26" fill="none" stroke="#ebf7ff" stroke-width="9" stroke-linecap="round"/>
+              <path d="M78 50l8 16 16 8-16 8-8 16-8-16-16-8 16-8zM246 57l6 12 12 6-12 6-6 12-6-12-12-6 12-6zM252 147l5 10 10 5-10 5-5 10-5-10-10-5 10-5z" fill="#ffc857" opacity=".9"/>
+            </svg>
+          </span>
+          <span class="role-title">AI Coach</span>
+          <span class="description">Ask quick BIOBUZZ questions and get season guidance</span>
+          <span class="tag">Ask the BIOBUZZ AI</span>
+        </a>
       </div>
-      <p class="footnote">For season-specific details, check the official <a href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener noreferrer">2026–2027 FTC Game Manual</a>.</p>
+      <p class="footnote">For season-specific details, check the official <a href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener noreferrer">2026–2027 FTC Competition Manual</a>.</p>
     </section>
   </main>
 </body>
