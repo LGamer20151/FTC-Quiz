@@ -32,6 +32,11 @@ nextButton.addEventListener('click', () => {
   }
 });
 
+// The shared game UI is loaded on this page as well as on the Builder quiz.
+const gameUiScript = document.createElement('script');
+gameUiScript.src = 'game-ui.js';
+document.body.appendChild(gameUiScript);
+
 function startQuiz() {
   // driverQuestions.js declares this as a top-level const, not a window property.
   if (typeof driverQuestionBank === 'undefined' || !Array.isArray(driverQuestionBank) || driverQuestionBank.length < QUESTIONS_PER_QUIZ) {

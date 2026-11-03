@@ -78,3 +78,8 @@ async function findAndyMarkPhoto(sku) {
 function normalizeSku(value) {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
+
+// Load the points/store/leaderboard UI without changing the existing Builder quiz.
+const gameUiScript = document.createElement('script');
+gameUiScript.src = 'game-ui.js';
+document.body.appendChild(gameUiScript);
