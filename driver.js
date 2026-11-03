@@ -39,7 +39,7 @@ function startQuiz() {
     startScreen.classList.remove('hidden');
     return;
   }
-  quizQuestions = shuffle([...driverQuestionBank]).slice(0, QUESTIONS_PER_QUIZ);
+  quizQuestions = shuffle([...driverQuestionBank]).slice(0, QUESTIONS_PER_QUIZ).map(randomizeChoices);
   currentQuestionIndex = 0;
   answers = Array(quizQuestions.length).fill(null);
   startScreen.classList.add('hidden');
@@ -47,6 +47,20 @@ function startQuiz() {
   quizScreen.classList.remove('hidden');
   renderQuestion();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function randomizeChoices(question) {
+  const choices = question.choices.map((text, index) => ({
+    text,
+    isCorrect: index === question.answer
+  }));
+  shuffle(choices);
+
+  return {
+    ...question,
+    choices: choices.map(choice => choice.text),
+    answer: choices.findIndex(choice => choice.isCorrect)
+  };
 }
 
 function moveTo(index) {
