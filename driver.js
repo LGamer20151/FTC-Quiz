@@ -50,16 +50,19 @@ function startQuiz() {
 }
 
 function randomizeChoices(question) {
-  const choices = question.choices.map((text, index) => ({
-    text,
-    isCorrect: index === question.answer
-  }));
-  shuffle(choices);
+  const correctChoice = question.choices[question.answer];
+  const incorrectChoices = question.choices.filter((_, index) => index !== question.answer);
+  shuffle(incorrectChoices);
+
+  // Pick a random slot for the correct answer, then fill the other slots with shuffled distractors.
+  const correctIndex = Math.floor(Math.random() * question.choices.length);
+  const choices = [...incorrectChoices];
+  choices.splice(correctIndex, 0, correctChoice);
 
   return {
     ...question,
-    choices: choices.map(choice => choice.text),
-    answer: choices.findIndex(choice => choice.isCorrect)
+    choices,
+    answer: correctIndex
   };
 }
 
