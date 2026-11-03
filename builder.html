@@ -7,13 +7,12 @@
   <title>Builder Quiz | FTC Quiz</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .build-question-image { display: block; width: min(100%, 520px); height: clamp(240px, 42vw, 360px); margin: 22px auto 10px; object-fit: contain; background: #f5f7fa; border: 1px solid rgba(108,158,225,.35); border-radius: 16px; }
-    .image-caption { margin: 0 auto 12px; color: var(--muted); font-size: .9rem; }
-    .source-link { color: var(--blue); }
+    .part-image { display: block; width: min(100%, 560px); height: clamp(250px, 42vw, 390px); margin: 20px auto 10px; object-fit: contain; background: #f5f7fa; border: 1px solid rgba(108,158,225,.35); border-radius: 16px; }
+    .image-caption { margin: 0 auto 18px; color: var(--muted); font-size: .9rem; }
     .quiz-card { text-align: center; }
     .choices { text-align: left; }
-    .builder-actions { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
     .builder-score { color: var(--yellow); font-size: 1.25rem; font-weight: 800; }
+    .builder-start-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
   </style>
 </head>
 <body>
@@ -24,28 +23,30 @@
   <main>
     <section class="home-card" id="builderStart">
       <p class="eyebrow">Builder practice</p>
-      <h1>Can you identify the part?</h1>
-      <p class="intro">Look at each part from the BIOBUZZ StarterBot kit and choose its name. Four visual questions, with answer choices shuffled each time.</p>
-      <button class="primary-btn" id="startButton" type="button">Start Builder quiz</button>
-      <p><a class="secondary-btn link-button" href="index.html">Back home</a></p>
+      <h1>Identify the robot parts</h1>
+      <p class="intro">Practice identifying every line item in the AndyMark Robits BIOBUZZ StarterBot kit list. Each question shows a local illustration so it can load without relying on an outside image server.</p>
+      <div class="builder-start-actions">
+        <button class="primary-btn" id="startButton" type="button">Start all part questions</button>
+        <a class="secondary-btn link-button" href="index.html">Back home</a>
+      </div>
+      <p class="footnote"><a href="https://andymark.com/products/robits-biobuzz-starterbot?_pos=4&amp;_sid=89bc75b6e&amp;_ss=r" target="_blank" rel="noopener noreferrer">Open the AndyMark BIOBUZZ StarterBot listing</a>. Illustrations are simplified drawings, not official product photos.</p>
     </section>
 
     <section id="quizScreen" class="hidden" aria-live="polite">
       <div class="quiz-header">
-        <p id="progressText" class="progress-text">Part 1 of 4</p>
+        <p id="progressText" class="progress-text">Part 1 of 31</p>
         <a class="secondary-btn link-button" href="index.html">Exit to home</a>
       </div>
       <div class="progress-track" aria-hidden="true"><div id="progressBar" class="progress-bar"></div></div>
       <article class="quiz-card">
-        <p id="questionCategory" class="category-badge">Builder · Part identification</p>
+        <p class="category-badge">Builder · Part identification</p>
         <h1 id="questionText" class="question-text">What part is shown?</h1>
-        <img id="partImage" class="build-question-image" src="builder-assets/stealth-wheel.svg" alt="Illustration of a robot wheel">
-        <p id="imageCaption" class="image-caption">Part image</p>
-        <p><a id="sourceLink" class="source-link" href="https://www.andymark.com/products/stealth-wheels-options" target="_blank" rel="noopener noreferrer">View this part at AndyMark</a></p>
+        <img id="partImage" class="part-image" alt="Illustration of an individual robot part">
+        <p class="image-caption">Simplified illustration · not to scale</p>
         <div id="answerChoices" class="choices"></div>
         <p id="answerFeedback" class="feedback" aria-live="polite"></p>
       </article>
-      <div class="builder-actions">
+      <div class="quiz-footer">
         <button id="nextButton" class="primary-btn" type="button" disabled>Next part</button>
       </div>
     </section>
@@ -54,8 +55,8 @@
       <p class="eyebrow">Builder quiz complete</p>
       <h1 id="resultHeading">Nice work!</h1>
       <p id="finalScore" class="builder-score"></p>
-      <p class="intro">Keep practicing with real robot parts and your team’s build guide.</p>
-      <div class="start-actions">
+      <p class="intro">You went through every part listed for the kit. Try again to reshuffle the questions and answer positions.</p>
+      <div class="builder-start-actions">
         <button id="retryButton" class="primary-btn" type="button">Try again</button>
         <a class="secondary-btn link-button" href="index.html">Back home</a>
       </div>
