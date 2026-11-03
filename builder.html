@@ -24,12 +24,12 @@
     <section class="home-card" id="builderStart">
       <p class="eyebrow">Builder practice</p>
       <h1>Identify the robot parts</h1>
-      <p class="intro">Practice identifying every line item in the AndyMark Robits BIOBUZZ StarterBot kit list. Each question shows a local illustration so it can load without relying on an outside image server.</p>
+      <p class="intro">Practice identifying every line item in the AndyMark Robits BIOBUZZ StarterBot kit list. The quiz loads official AndyMark product photos when available.</p>
       <div class="builder-start-actions">
         <button class="primary-btn" id="startButton" type="button">Start all part questions</button>
         <a class="secondary-btn link-button" href="index.html">Back home</a>
       </div>
-      <p class="footnote"><a href="https://andymark.com/products/robits-biobuzz-starterbot?_pos=4&amp;_sid=89bc75b6e&amp;_ss=r" target="_blank" rel="noopener noreferrer">Open the AndyMark BIOBUZZ StarterBot listing</a>. Illustrations are simplified drawings, not official product photos.</p>
+      <p class="footnote"><a href="https://andymark.com/products/robits-biobuzz-starterbot?_pos=4&amp;_sid=89bc75b6e&amp;_ss=r" target="_blank" rel="noopener noreferrer">Open the AndyMark BIOBUZZ StarterBot listing</a>.</p>
     </section>
 
     <section id="quizScreen" class="hidden" aria-live="polite">
@@ -41,8 +41,8 @@
       <article class="quiz-card">
         <p class="category-badge">Builder · Part identification</p>
         <h1 id="questionText" class="question-text">What part is shown?</h1>
-        <img id="partImage" class="part-image" alt="Illustration of an individual robot part">
-        <p class="image-caption">Simplified illustration · not to scale</p>
+        <img id="partImage" class="part-image" alt="Official product photo of an individual robot part">
+        <p id="imageCaption" class="image-caption" aria-live="polite">Loading the part photo…</p>
         <div id="answerChoices" class="choices"></div>
         <p id="answerFeedback" class="feedback" aria-live="polite"></p>
       </article>
@@ -63,5 +63,6 @@
     </section>
   </main>
   <script src="builder.js"></script>
+  <script src="builder-photo.js"></script>
 </body>
 </html>
