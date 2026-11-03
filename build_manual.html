@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build EMBEDDED_MANUAL</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--accent:#f5a623;--accent2:#2f81f7;--text:#e6edf3;--muted:#8b949e;--border:#30363d;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;padding:30px 20px;}
+  .wrap{max-width:900px;margin:0 auto;}
+  h1{color:var(--accent);font-size:1.5rem;margin-bottom:6px;}
+  p.sub{color:var(--muted);font-size:.9rem;margin-bottom:20px;}
+  .drop{border:2px dashed var(--border);border-radius:12px;padding:44px 20px;text-align:center;color:var(--muted);margin:20px 0;cursor:pointer;transition:.2s;}
+  .drop.over{border-color:var(--accent);color:var(--accent);background:#161b22;}
+  textarea{width:100%;height:280px;background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:ui-monospace,Consolas,monospace;font-size:.8rem;resize:vertical;}
+  button{background:var(--accent);border:none;color:#111;font-weight:700;padding:11px 22px;border-radius:8px;cursor:pointer;margin-top:12px;font-size:.9rem;}
+  button:hover{background:#ffbe4d;}
+  .info{color:var(--accent2);font-size:.85rem;margin-top:10px;min-height:20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Build EMBEDDED_MANUAL line</h1>
+  <p class="sub">Drop <code>manual.txt</code> below (or click to choose it). The generated line is copy-paste ready for <code>ai.html</code>.</p>
+
+  <div class="drop" id="drop">Drop manual.txt here or click to choose a file</div>
+  <input type="file" id="file" accept=".txt,.text" hidden>
+  <div class="info" id="info"></div>
+  <textarea id="out" readonly placeholder="Generated line appears here..."></textarea>
+  <button onclick="copyOut()">Copy to clipboard</button>
+</div>
+
+<script>
+const drop = document.getElementById('drop');
+const fileInput = document.getElementById('file');
+const out = document.getElementById('out');
+const info = document.getElementById('info');
+
+drop.addEventListener('click', () => fileInput.click());
+drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', e => {
+  e.preventDefault();
+  drop.classList.remove('over');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+function handleFile(f) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let text = reader.result;
+    text = text.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
+    const chars = text.length;
+    const pages = Math.max(1, Math.round(chars / 3200));
+    out.value = 'const EMBEDDED_MANUAL = `' + text + '`;';
+    info.textContent = 'Loaded ' + chars.toLocaleString() + ' characters (approx. ' + pages + ' pages). Line ready below.';
+  };
+  reader.readAsText(f);
+}
+
+function copyOut() {
+  if (!out.value) return;
+  out.select();
+  document.execCommand('copy');
+  info.textContent = 'Copied. Paste it over the EMBEDDED_MANUAL line in ai.html.';
+}
+</script>
+</body>
+</html>
