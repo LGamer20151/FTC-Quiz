@@ -3,74 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FTC Quiz</title>
+    <meta name="theme-color" content="#07111f" />
+    <title>FTC Quiz | Home</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="topbar">
-        <div class="brand">FTC Quiz</div>
+        <a class="brand" href="index.html" aria-label="FTC Quiz home">FTC Quiz</a>
+        <span class="season-label">2026–2027 Season</span>
       </header>
 
       <main class="app">
-        <section id="homeScreen" class="screen active">
+        <section id="homeScreen" class="screen active" aria-labelledby="pageTitle">
           <div class="hero-card">
             <p class="eyebrow">FIRST Tech Challenge</p>
-            <h1>Pick your team role</h1>
+            <h1 id="pageTitle">Choose your role</h1>
             <p class="subtitle">
-              Test your FTC knowledge as a builder or driver for the 2026–2027 season.
+              Pick a quiz path to get started. Your team can practice as a builder or a driver.
             </p>
 
             <div class="role-grid">
-              <button class="role-card" data-role="builder">
-                <span class="role-icon">🛠️</span>
+              <button class="role-card" type="button" data-role="builder">
+                <span class="role-icon" aria-hidden="true">🛠️</span>
                 <span class="role-name">Builder</span>
-                <small>Identify robot parts</small>
+                <span class="role-description">Practice recognizing robot parts</span>
+                <span class="role-cta">Coming soon</span>
               </button>
 
-              <button class="role-card" data-role="driver">
-                <span class="role-icon">🏁</span>
+              <button class="role-card" type="button" data-role="driver">
+                <span class="role-icon" aria-hidden="true">🏁</span>
                 <span class="role-name">Driver</span>
-                <small>Know the rules and gameplay</small>
+                <span class="role-description">Practice game rules and match knowledge</span>
+                <span class="role-cta">Coming soon</span>
               </button>
             </div>
+
+            <p class="home-note">
+              The home page is ready. Quiz questions will be added in a later step.
+            </p>
           </div>
         </section>
 
-        <section id="quizScreen" class="screen">
-          <div class="quiz-header">
-            <div id="progressText" class="progress-text">Question 1 / 1</div>
-            <button id="homeBtn" class="secondary-btn">Home</button>
-          </div>
-
-          <div class="quiz-card">
-            <div id="categoryBadge" class="category-badge">Builder</div>
-            <h2 id="questionText">Question text</h2>
-
-            <div id="imageContainer" class="image-container hidden"></div>
-
-            <div id="choices" class="choices"></div>
-          </div>
-
-          <div class="quiz-footer">
-            <button id="prevBtn" class="secondary-btn">Previous</button>
-            <button id="nextBtn" class="primary-btn">Next</button>
-          </div>
-        </section>
-
-        <section id="resultsScreen" class="screen">
-          <div class="results-card">
-            <p class="eyebrow">Quiz complete</p>
-            <h2 id="resultsTitle">Nice work!</h2>
-            <div id="scoreSummary" class="score-summary">0 / 0</div>
-            <div id="resultsMessage" class="results-message"></div>
-
-            <div id="reviewList" class="review-list"></div>
-
-            <div class="results-actions">
-              <button id="retryBtn" class="primary-btn">Play Again</button>
-              <button id="resultsHomeBtn" class="secondary-btn">Home</button>
-            </div>
+        <section id="selectionScreen" class="screen" aria-live="polite" aria-labelledby="selectionTitle">
+          <div class="hero-card selection-card">
+            <p class="eyebrow">FTC Quiz</p>
+            <h1 id="selectionTitle">Quiz coming soon</h1>
+            <p id="selectionMessage" class="subtitle"></p>
+            <button id="backHomeButton" class="primary-btn" type="button">Back to home</button>
           </div>
         </section>
       </main>
