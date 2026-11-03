@@ -86,23 +86,35 @@
   <script>
     // ---------- Knowledge base (BIOBUZZ 2026-2027, Manual TU07) ----------
     const KB = [
-          { keys: ["yellow card", "red card", "card", "cards"],
+      { keys: ["what is biobuzz", "biobuzz", "season", "kickoff", "2026", "2027"],
+        answer: "BIOBUZZ is the 2026-2027 FIRST Tech Challenge game, presented by RTX. The season kicks off in September and runs through March, with capstone events April through July." },
+      { keys: ["what is first", "about first", "nonprofit", "mission", "for inspiration"],
+        answer: "FIRST (For Inspiration and Recognition of Science and Technology) is a nonprofit advancing STEM education. Its mission is to provide life-changing robotics programs that give young people the skills, confidence, and resilience to build a better world." },
+      { keys: ["gracious professionalism", "core values", "ethos", "woodie flowers"],
+        answer: "Gracious Professionalism is part of the FIRST ethos. It encourages high-quality work, emphasizes the value of others, and respects the community. Fierce competition and mutual gain coexist, with no trash talking. The term was coined by Dr. Woodie Flowers (1943-2019)." },
+      { keys: ["spirit of the competition", "integrity", "cic", "competition integrity"],
+        answer: "The Spirit of the Competition and the Competition Integrity Contract (CIC) are in Sections 1.4 and 1.5 of the manual. They set expectations for fair play, honesty, and respect between teams and volunteers." },
+      { keys: ["volunteer", "field staff", "referee", "judge", "scorekeeper", "fta"],
+        answer: "Volunteers are essential to FTC events. FIELD STAFF (Section 9.10) includes the REFEREE, FIELD TECHNICAL ADVISOR (FTA), scorekeepers, and field reset crew. Judges (Section 13) handle awards and interviews." },
+      { keys: ["match length", "how long", "match time", "autonomous", "driver controlled", "teleop", "endgame", "periods", "match structure"],
+        answer: "A BIOBUZZ MATCH has three parts (Section 10.4): a 30-second Autonomous period, a 2-minute Driver-Controlled period, and endgame scoring inside the driver-controlled period. Total MATCH time is about 2 minutes 30 seconds." },
+      { keys: ["game element", "game elements", "hive", "flower", "field", "arena", "scoring element", "scoring elements", "april tag", "apriltag", "tile"],
+        answer: "The ARENA (Section 9) includes the FIELD, the HIVE Structure (9.6), the FLOWER (9.7), and the SCORING ELEMENTS (9.8). It also covers TILE Coordinates (9.9) and the FIELD STAFF (9.10). AprilTags are used for vision targets on the field." },
+      { keys: ["scoring", "how to score", "points", "scored", "score"],
+        answer: "Scoring in BIOBUZZ happens during Autonomous and Driver-Controlled periods. Teams earn points by manipulating SCORING ELEMENTS into or around the HIVE and FLOWER structures. See Section 10 (Game Play) and the scoring tables in the manual for exact point values per action." },
+      { keys: ["foul", "fouls", "penalty", "penalties", "major foul", "minor foul"],
+        answer: "FOULS (Section 10.9) are rule violations that result in penalties. MINOR FOULS are typically corrected with a warning or small point deduction, while MAJOR FOULS can result in a YELLOW CARD or RED CARD. A RED CARD disqualifies the team from the MATCH." },
+      { keys: ["yellow card", "red card", "card"],
         answer: "A YELLOW CARD is a warning for a serious rule violation. A RED CARD is a disqualification from the MATCH. Cards are issued by the REFEREE and tracked across the event. Two YELLOW CARDS in the same event typically result in a RED CARD." },
-      { keys: ["robot construction", "robot rules", "robot size", "18 inch", "weight", "42", "build rules", "inspection"],
-        answer: "ROBOT construction rules are in Section 12 (Robot Construction). The ROBOT must fit within an 18-inch cube at the start of a MATCH, weigh no more than 42 pounds, and use only approved materials. INSPECTION checks size, weight, safety, and legality before competition." },
+      { keys: ["robot construction", "robot rules", "robot size", "18 inch", "weight", "build rules", "inspection"],
+        answer: "ROBOT construction rules are in Section 12. The ROBOT must fit within an 18-inch cube at the start of a MATCH, weigh no more than 42 pounds, and use only approved materials. INSPECTION checks size, weight, safety, and legality before competition." },
       { keys: ["motor", "motors", "servo", "servos", "actuator", "actuators"],
         answer: "FTC allows up to 8 motors and 12 servos on a ROBOT. Legal motors include the REV HD Hex Motor, goBILDA 5202 series, and other approved actuators listed in Section 12.3 of the manual." },
       { keys: ["control system", "rev hub", "control hub", "expansion hub", "driver station", "robot controller"],
         answer: "The FTC Control System uses a REV Control Hub or an Expansion Hub paired with a Robot Controller phone. The Driver Station runs on a separate Android device. Legal control system components are listed in Section 12.2." },
-      { keys: ["camera", "cameras", "sensor", "sensors", "vision", "april tag vision"],
+      { keys: ["camera", "cameras", "sensor", "sensors", "vision"],
         answer: "Sensors and cameras are allowed as long as they are used for feedback and not for controlling the ROBOT remotely. AprilTag vision is common for localization. See Section 12.4 for the approved sensor list." },
-      { keys: ["battery", "batteries", "power", "charging", "12v"],
-        answer: "ROBOTS use a legal 12V battery, typically a REV or goBILDA NiMH pack. Batteries must be charged safely, inspected for damage, and swapped only outside the FIELD. See Section 12.5." },
-      { keys: ["programming", "code", "java", "blockly", "blocks", "opmode", "opmodes", "onbot java", "android studio"],
-        answer: "FTC supports programming in Blocks (Blockly) and OnBot Java, plus Android Studio for advanced teams. OpModes are the programs that run the ROBOT during AUTO and TELEOP. See Section 12.7." },
-      { keys: ["safety", "safety rules", "safety glasses", "glasses", "ppe"],
-        answer: "Safety rules (Section 11) require SAFETY GLASSES in the ARENA and pit areas, safe tool use, and proper handling of batteries. Violations can result in a YELLOW CARD or removal from the field." },
-      { keys: ["award", "awards", "judging", "inspire", "think", "connect", "design", "motivate", "control award", "innovate", "promote", "compass", "judges"],
+      { keys: ["award", "awards", "judging", "inspire", "think", "connect", "design", "motivate", "control", "innovate", "promote", "compass"],
         answer: "FIRST Tech Challenge awards (Section 13) include: INSPIRE, THINK, CONNECT, DESIGN, MOTIVATE, CONTROL, INNOVATE, PROMOTE, and COMPASS. The INSPIRE AWARD is the highest honor at an event. JUDGES conduct interviews and pit visits to determine winners." },
       { keys: ["inspire award", "inspire"],
         answer: "The INSPIRE AWARD is the top award at an FTC event. It recognizes the team that best embodies the FIRST mission, shows excellence in engineering, outreach, and Gracious Professionalism, and is a strong contender across all judged categories." },
@@ -118,102 +130,33 @@
         answer: "PLAYOFFS use a 2-team ALLIANCE format. The top-ranked teams become ALLIANCE CAPTAINS and pick partners in a snake draft. Alliances compete in a bracket to determine the event winner." },
       { keys: ["ranking", "rankings", "ranking points", "rp", "tiebreaker"],
         answer: "Teams are ranked by RANKING POINTS (RP) earned in qualification matches, then by average match score, then by average score of losing matches. See Section 10.6 for the full ranking criteria." },
-      { keys: ["driver station", "ds", "pre-match", "pre match", "setup", "checklist"],
+      { keys: ["pre-match", "pre match", "setup", "checklist"],
         answer: "Before each MATCH, teams complete a pre-match checklist: connect the Driver Station to the Robot Controller, verify the ROBOT is within size, select the correct OpMode, and confirm the alliance color. See Section 10.2." },
+      { keys: ["autonomous", "auto", "auton"],
+        answer: "The AUTONOMOUS period is 30 seconds at the start of a MATCH. ROBOTS run pre-programmed OpModes without driver input. Teams often use AprilTag vision for alignment and scoring during AUTO." },
+      { keys: ["driver controlled", "teleop"],
+        answer: "The DRIVER-CONTROLLED period is 2 minutes. Drivers control the ROBOT using gamepads connected to the Driver Station. Endgame scoring opportunities occur in the final 30 seconds." },
+      { keys: ["endgame", "end game"],
+        answer: "The ENDGAME is the final portion of the Driver-Controlled period, typically the last 30 seconds, when special scoring opportunities become available. Check Section 10.4 for BIOBUZZ-specific endgame rules." },
+      { keys: ["safety", "safety rules", "safety glasses", "glasses", "ppe"],
+        answer: "Safety rules (Section 11) require SAFETY GLASSES in the ARENA and pit areas, safe tool use, and proper handling of batteries. Violations can result in a YELLOW CARD or removal from the field." },
+      { keys: ["battery", "batteries", "power", "charging"],
+        answer: "ROBOTS use a legal 12V battery, typically a REV or goBILDA NiMH pack. Batteries must be charged safely, inspected for damage, and swapped only outside the FIELD. See Section 12.5." },
+      { keys: ["programming", "code", "java", "blockly", "opmode", "opmodes", "onbot java", "android studio"],
+        answer: "FTC supports programming in Blocks (Blockly) and OnBot Java, plus Android Studio for advanced teams. OpModes are the programs that run the ROBOT during AUTO and TELEOP. See Section 12.7." },
       { keys: ["scout", "scouting", "scout team"],
-        answer: "Scouting helps teams choose playoff partners and plan strategy. Track each team's autonomous reliability, scoring rate, endgame ability, and penalties. Good scouting data wins alliances." },
-      { keys: ["strategy", "game plan", "plan"],
-        answer: "Strong BIOBUZZ strategy balances consistent autonomous scoring, reliable driver-controlled cycles, and endgame. Prioritize clean, penalty-free matches, since ranking points reward both winning and consistent scoring." },
-      { keys: ["penalty", "penalties", "point deduction"],
-        answer: "PENALTIES are point deductions or additions applied by the REFEREE for rule violations. MINOR FOULS usually deduct a small number of points, while MAJOR FOULS deduct more and may trigger cards. See Section 10.9." }
+        answer: "Scouting helps teams pick playoff partners and prepare for matches. Common tools include paper scouting sheets, spreadsheets, and apps that track team performance, autonomous reliability, and endgame ability." },
+      { keys: ["pit", "pit crew", "pit area"],
+        answer: "The PIT AREA is where teams prepare the ROBOT between matches. It has power, a table, and storage. Pit crew handles repairs, battery swaps, and last-minute checks. See Section 8 for pit rules." },
+      { keys: ["help", "commands", "what can you do", "topics"],
+        answer: "You can ask me about: the season and BIOBUZZ overview, match structure and timing, the ARENA and game elements, scoring, fouls and cards, robot construction and inspection, control system and programming, awards and judging, safety, and the tournament path. Just type a question." }
     ];
 
     // ---------- Chat logic ----------
-    const log = document.getElementById("chat-log");
-    const form = document.getElementById("chat-form");
-    const input = document.getElementById("chat-input");
-    const sendBtn = document.getElementById("chat-send");
-    const suggestions = document.getElementById("suggestions");
+    const logEl = document.getElementById("chat-log");
+    const formEl = document.getElementById("chat-form");
+    const inputEl = document.getElementById("chat-input");
+    const sendEl = document.getElementById("chat-send
 
-    function addMsg(text, who) {
-      const div = document.createElement("div");
-      div.className = "msg " + who;
-      const label = document.createElement("div");
-      label.className = "who";
-      label.textContent = who === "user" ? "You" : "FTC AI";
-      const body = document.createElement("div");
-      body.textContent = text;
-      div.appendChild(label);
-      div.appendChild(body);
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
-    }
-
-    function normalize(s) {
-      return s.toLowerCase().replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
-    }
-
-    function findAnswer(query) {
-      const q = normalize(query);
-      if (!q) return null;
-      let best = null, bestScore = 0;
-      for (const entry of KB) {
-        let score = 0;
-        for (const k of entry.keys) {
-          if (q.includes(k)) score += k.length;
-        }
-        if (score > bestScore) { bestScore = score; best = entry; }
-      }
-      return bestScore > 0 ? best.answer : null;
-    }
-
-    function fallback(query) {
-      return "I don't have a specific entry for that yet. Try asking about BIOBUZZ rules, game elements, match structure, scoring, fouls, robot construction, awards, or the tournament path. For exact rule text, check the official Competition Manual (TU07) at ftc-resources.firstinspires.org/ftc/game/manual.";
-    }
-
-    function respond(query) {
-      const answer = findAnswer(query);
-      addMsg(answer || fallback(query), "bot");
-    }
-
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const q = input.value.trim();
-      if (!q) return;
-      addMsg(q, "user");
-      input.value = "";
-      sendBtn.disabled = true;
-      setTimeout(function () {
-        respond(q);
-        sendBtn.disabled = false;
-        input.focus();
-      }, 220);
-    });
-
-    suggestions.addEventListener("click", function (e) {
-      const btn = e.target.closest("button[data-q]");
-      if (!btn) return;
-      const q = btn.getAttribute("data-q");
-      addMsg(q, "user");
-      setTimeout(function () { respond(q); }, 220);
-    });
-
-    /* ------------------------------------------------------------------
-       FUTURE BACKEND HOOK
-       GitHub Pages is static, so no API key can be stored safely here.
-       To use a real LLM later, deploy a small proxy (Cloudflare Worker,
-       Vercel function, etc.) and replace the call below:
-
-       async function askBackend(query) {
-         const res = await fetch("https://your-proxy.example.com/chat", {
-           method: "POST",
-           headers: { "Content-Type": "application/json" },
-           body: JSON.stringify({ message: query })
-         });
-         const data = await res.json();
-         return data.reply;
-       }
-       ------------------------------------------------------------------ */
-  </script>
-</body>
-</html>
+---
+*This answer is long, so it stops here. Tap **Continue** or type "continue" to get the rest.*
