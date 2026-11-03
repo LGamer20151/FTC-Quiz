@@ -157,6 +157,134 @@
     const formEl = document.getElementById("chat-form");
     const inputEl = document.getElementById("chat-input");
     const sendEl = document.getElementById("chat-send
+      { keys: ["yellow card", "red card", "card", "cards"],
+        answer: "A YELLOW CARD is a warning for a serious rule violation. A RED CARD is a disqualification from the MATCH. Cards are issued by the REFEREE and tracked across the event. Two YELLOW CARDS in the same event typically result in a RED CARD." },
+      { keys: ["robot construction", "robot rules", "robot size", "18 inch", "weight", "42", "build rules", "inspection"],
+        answer: "ROBOT construction rules are in Section 12 (Robot Construction). The ROBOT must fit within an 18-inch cube at the start of a MATCH, weigh no more than 42 pounds, and use only approved materials. INSPECTION checks size, weight, safety, and legality before competition." },
+      { keys: ["motor", "motors", "servo", "servos", "actuator", "actuators"],
+        answer: "FTC allows up to 8 motors and 12 servos on a ROBOT. Legal motors include the REV HD Hex Motor, goBILDA 5202 series, and other approved actuators listed in Section 12.3 of the manual." },
+      { keys: ["control system", "rev hub", "control hub", "expansion hub", "driver station", "robot controller"],
+        answer: "The FTC Control System uses a REV Control Hub or an Expansion Hub paired with a Robot Controller phone. The Driver Station runs on a separate Android device. Legal control system components are listed in Section 12.2." },
+      { keys: ["camera", "cameras", "sensor", "sensors", "vision", "april tag vision"],
+        answer: "Sensors and cameras are allowed as long as they are used for feedback and not for controlling the ROBOT remotely. AprilTag vision is common for localization. See Section 12.4 for the approved sensor list." },
+      { keys: ["battery", "batteries", "power", "charging", "12v"],
+        answer: "ROBOTS use a legal 12V battery, typically a REV or goBILDA NiMH pack. Batteries must be charged safely, inspected for damage, and swapped only outside the FIELD. See Section 12.5." },
+      { keys: ["programming", "code", "java", "blockly", "blocks", "opmode", "opmodes", "onbot java", "android studio"],
+        answer: "FTC supports programming in Blocks (Blockly) and OnBot Java, plus Android Studio for advanced teams. OpModes are the programs that run the ROBOT during AUTO and TELEOP. See Section 12.7." },
+      { keys: ["safety", "safety rules", "safety glasses", "glasses", "ppe"],
+        answer: "Safety rules (Section 11) require SAFETY GLASSES in the ARENA and pit areas, safe tool use, and proper handling of batteries. Violations can result in a YELLOW CARD or removal from the field." },
+      { keys: ["award", "awards", "judging", "inspire", "think", "connect", "design", "motivate", "control award", "innovate", "promote", "compass", "judges"],
+        answer: "FIRST Tech Challenge awards (Section 13) include: INSPIRE, THINK, CONNECT, DESIGN, MOTIVATE, CONTROL, INNOVATE, PROMOTE, and COMPASS. The INSPIRE AWARD is the highest honor at an event. JUDGES conduct interviews and pit visits to determine winners." },
+      { keys: ["inspire award", "inspire"],
+        answer: "The INSPIRE AWARD is the top award at an FTC event. It recognizes the team that best embodies the FIRST mission, shows excellence in engineering, outreach, and Gracious Professionalism, and is a strong contender across all judged categories." },
+      { keys: ["dean's list", "deans list", "dean"],
+        answer: "The DEAN'S LIST AWARD recognizes outstanding student leaders in grades 10-12 who demonstrate leadership, dedication to FIRST core values, and impact on their team and community. Finalists are selected at the regional and championship levels." },
+      { keys: ["tournament", "tournament path", "qualifier", "league", "championship", "advance", "progression"],
+        answer: "The FTC tournament path (Section 4) starts with League Meets and Qualifiers, then advances to Regional or State Championships, and finally to the FIRST Championship. Advancement is based on performance and award wins." },
+      { keys: ["league", "league meet", "meet"],
+        answer: "LEAGUE MEETS are smaller, local events that feed into a League Championship. They give teams more match play and judging opportunities before Qualifiers. See Section 4.3 for league structure." },
+      { keys: ["qualifier", "qualifying tournament"],
+        answer: "A QUALIFIER is a one-day event where teams compete in qualification matches and playoffs, and are judged for awards. Top performers and award winners advance to the next level." },
+      { keys: ["playoff", "alliance", "alliances", "captain", "pick"],
+        answer: "PLAYOFFS use a 2-team ALLIANCE format. The top-ranked teams become ALLIANCE CAPTAINS and pick partners in a snake draft. Alliances compete in a bracket to determine the event winner." },
+      { keys: ["ranking", "rankings", "ranking points", "rp", "tiebreaker"],
+        answer: "Teams are ranked by RANKING POINTS (RP) earned in qualification matches, then by average match score, then by average score of losing matches. See Section 10.6 for the full ranking criteria." },
+      { keys: ["driver station", "ds", "pre-match", "pre match", "setup", "checklist"],
+        answer: "Before each MATCH, teams complete a pre-match checklist: connect the Driver Station to the Robot Controller, verify the ROBOT is within size, select the correct OpMode, and confirm the alliance color. See Section 10.2." },
+      { keys: ["scout", "scouting", "scout team"],
+        answer: "Scouting helps teams choose playoff partners and plan strategy. Track each team's autonomous reliability, scoring rate, endgame ability, and penalties. Good scouting data wins alliances." },
+      { keys: ["strategy", "game plan", "plan"],
+        answer: "Strong BIOBUZZ strategy balances consistent autonomous scoring, reliable driver-controlled cycles, and endgame. Prioritize clean, penalty-free matches, since ranking points reward both winning and consistent scoring." },
+      { keys: ["penalty", "penalties", "point deduction"],
+        answer: "PENALTIES are point deductions or additions applied by the REFEREE for rule violations. MINOR FOULS usually deduct a small number of points, while MAJOR FOULS deduct more and may trigger cards. See Section 10.9." }
+    ];
 
----
-*This answer is long, so it stops here. Tap **Continue** or type "continue" to get the rest.*
+    // ---------- Chat logic ----------
+    const log = document.getElementById("chat-log");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("chat-send");
+    const suggestions = document.getElementById("suggestions");
+
+    function addMsg(text, who) {
+      const div = document.createElement("div");
+      div.className = "msg " + who;
+      const label = document.createElement("div");
+      label.className = "who";
+      label.textContent = who === "user" ? "You" : "FTC AI";
+      const body = document.createElement("div");
+      body.textContent = text;
+      div.appendChild(label);
+      div.appendChild(body);
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function normalize(s) {
+      return s.toLowerCase().replace(/[^a-z0-9' ]/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function findAnswer(query) {
+      const q = normalize(query);
+      if (!q) return null;
+      let best = null, bestScore = 0;
+      for (const entry of KB) {
+        let score = 0;
+        for (const k of entry.keys) {
+          if (q.includes(k)) score += k.length;
+        }
+        if (score > bestScore) { bestScore = score; best = entry; }
+      }
+      return bestScore > 0 ? best.answer : null;
+    }
+
+    function fallback(query) {
+      return "I don't have a specific entry for that yet. Try asking about BIOBUZZ rules, game elements, match structure, scoring, fouls, robot construction, awards, or the tournament path. For exact rule text, check the official Competition Manual (TU07) at ftc-resources.firstinspires.org/ftc/game/manual.";
+    }
+
+    function respond(query) {
+      const answer = findAnswer(query);
+      addMsg(answer || fallback(query), "bot");
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      addMsg(q, "user");
+      input.value = "";
+      sendBtn.disabled = true;
+      setTimeout(function () {
+        respond(q);
+        sendBtn.disabled = false;
+        input.focus();
+      }, 220);
+    });
+
+    suggestions.addEventListener("click", function (e) {
+      const btn = e.target.closest("button[data-q]");
+      if (!btn) return;
+      const q = btn.getAttribute("data-q");
+      addMsg(q, "user");
+      setTimeout(function () { respond(q); }, 220);
+    });
+
+    /* ------------------------------------------------------------------
+       FUTURE BACKEND HOOK
+       GitHub Pages is static, so no API key can be stored safely here.
+       To use a real LLM later, deploy a small proxy (Cloudflare Worker,
+       Vercel function, etc.) and replace the call below:
+
+       async function askBackend(query) {
+         const res = await fetch("https://your-proxy.example.com/chat", {
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({ message: query })
+         });
+         const data = await res.json();
+         return data.reply;
+       }
+       ------------------------------------------------------------------ */
+  </script>
+</body>
+</html>
