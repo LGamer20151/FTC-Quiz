@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>Builder Quiz | FTC Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .build-question-image { display: block; width: min(100%, 680px); max-height: 440px; margin: 22px auto 10px; object-fit: contain; background: #f5f7fa; border: 1px solid rgba(108,158,225,.35); border-radius: 16px; }
+    .image-caption { margin: 0 auto 18px; color: var(--muted); font-size: .9rem; }
+    .question-prompt { margin-top: 16px; }
+    .source-link { color: var(--blue); }
+    .quiz-card { text-align: center; }
+    .choices { text-align: left; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">FTC Quiz</a>
+    <span class="season">2026–2027 Season</span>
+  </header>
+  <main>
+    <section class="home-card" id="builderStart">
+      <p class="eyebrow">Builder practice</p>
+      <h1>What robot kit is this?</h1>
+      <p class="intro">Study the photo, then identify the FTC starter robot. This is a visual identification question—not just a short text clue.</p>
+      <button class="primary-btn" id="startButton" type="button">Start Builder quiz</button>
+      <p><a class="secondary-btn link-button" href="index.html">Back home</a></p>
+    </section>
+
+    <section id="quizScreen" class="hidden" aria-live="polite">
+      <div class="quiz-header">
+        <p class="progress-text">Visual identification · Question 1 of 1</p>
+        <a class="secondary-btn link-button" href="index.html">Exit to home</a>
+      </div>
+      <article class="quiz-card">
+        <p class="category-badge">Builder · Robot identification</p>
+        <h1 class="question-text">What robot kit is shown in this picture?</h1>
+        <img class="build-question-image" src="https://cdn.shopify.com/s/files/1/0269/4741/4525/files/am-5832_biobuzz_starterbot_1.png" alt="Photo of an FTC starter robot assembled with wheels and mechanisms" loading="eager">
+        <p class="image-caption">Look closely at the complete robot pictured above.</p>
+        <p><a class="source-link" href="https://andymark.com/products/robits-biobuzz-starterbot?_pos=4&amp;_sid=89bc75b6e&amp;_ss=r" target="_blank" rel="noopener noreferrer">View the Robits BIOBUZZ StarterBot product page</a></p>
+        <div id="answerChoices" class="choices"></div>
+        <p id="answerFeedback" class="feedback" aria-live="polite"></p>
+        <button id="retryButton" class="secondary-btn hidden" type="button">Try again</button>
+      </article>
+    </section>
+  </main>
+  <script src="builder.js"></script>
+</body>
+</html>
