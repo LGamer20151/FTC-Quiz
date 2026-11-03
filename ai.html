@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIOBUZZ AI - Full 171-Page Manual Assistant</title>
+<title>BIOBUZZ AI - FTC Manual Assistant</title>
 <style>
   :root{--bg:#0d1117;--panel:#161b22;--accent:#f5a623;--accent2:#2f81f7;--text:#e6edf3;--muted:#8b949e;--border:#30363d;}
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -12,8 +12,8 @@
   header h1{font-size:2rem;letter-spacing:1px;}
   header h1 span{color:var(--accent);}
   header p{color:var(--muted);margin-top:6px;font-size:.95rem;}
+  .badge{display:inline-block;background:var(--accent2);color:#fff;font-size:.75rem;padding:3px 10px;border-radius:12px;margin-top:10px;letter-spacing:.5px;}
   .container{max-width:1000px;margin:0 auto;padding:24px 20px 80px;}
-  .badge{display:inline-block;background:var(--accent2);color:#fff;font-size:.75rem;padding:3px 10px;border-radius:12px;margin-top:10px;}
   section{margin-top:36px;}
   section h2{font-size:1.3rem;border-left:4px solid var(--accent);padding-left:12px;margin-bottom:14px;}
   .chat-box{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
@@ -34,8 +34,8 @@
 
 <header>
   <h1>BIOBUZZ <span>AI</span></h1>
-  <p>Full 2026-2027 FIRST Tech Challenge Manual Assistant (Pages 1-171)</p>
-  <div class="badge">Manual vTU07 - Full Text Indexed</div>
+  <p>2026-2027 FIRST Tech Challenge Manual Assistant</p>
+  <div class="badge">Manual vTU07 - Pages 1-171</div>
 </header>
 
 <div class="container">
@@ -43,13 +43,13 @@
     <h2>Ask the BIOBUZZ AI</h2>
     <div class="chat-box">
       <div id="chat-log">
-        <div class="msg bot">Welcome! I am loading the full 171-page BIOBUZZ manual. Once ready, ask me anything - robot rules, scoring, penalties, awards, field setup, tournament structure, or any specific rule number.</div>
+        <div class="msg bot">Welcome! Ask me anything about the 2026-2027 BIOBUZZ manual - robot rules, scoring, penalties, awards, field setup, tournament structure, or a specific rule like G14 or R5.</div>
       </div>
       <div class="chat-input">
         <input id="user-input" type="text" placeholder="Ask anything from the manual..." onkeydown="if(event.key==='Enter')sendMessage()">
         <button onclick="sendMessage()">Send</button>
       </div>
-      <div class="status" id="status">Loading manual.txt ...</div>
+      <div class="status" id="status">Initializing...</div>
     </div>
   </section>
 </div>
@@ -59,74 +59,117 @@
 </footer>
 
 <script>
-let chunks = [];   // {page, text}
+/* ============================================================
+   STEP 1: PASTE THE GENERATED LINE FROM build_manual.html HERE.
+   Replace the empty backticks below with the line it gives you.
+   ============================================================ */
+const EMBEDDED_MANUAL = ``;
+
+/* ============================================================
+   BUILT-IN FALLBACK INDEX (used until you paste the manual)
+   ============================================================ */
+const builtInIndex = [
+  {page:1,  text:"The 2026-2027 FIRST Tech Challenge game is BIOBUZZ Presented by RTX. This manual governs the ARENA, game rules, robot construction, and tournament structure."},
+  {page:3,  text:"Gracious Professionalism is the core value of FIRST. Teams compete hard but treat everyone with respect."},
+  {page:5,  text:"The Competition Integrity Contract (CIC) requires honesty, fair play, and adherence to the rules. Violations can lead to disqualification."},
+  {page:7,  text:"The season begins with Kickoff in September. League and qualifying events run through March. Capstone events and Championship occur April through July."},
+  {page:9,  text:"Rules are numbered by letter: E for event, A for awards, G for game, R for robot, T for tournament."},
+  {page:20, text:"Judged awards include Inspire, Think, Connect, Innovate, Design, Motivate, and Control. Alliance awards include Winning and Finalist. Individual awards include Dean's List and Compass."},
+  {page:30, text:"Event rules cover wireless and network use, pit rules, robot carts, safety, load-in and load-out, ceremonies, and team conduct."},
+  {page:45, text:"The ARENA includes the FIELD, driver stations, and surrounding area. The HIVE Structure is a central field element where SCORING ELEMENTS are placed."},
+  {page:50, text:"The FLOWER is a scoring-related field element. SCORING ELEMENTS are the game pieces robots manipulate during the MATCH."},
+  {page:55, text:"AprilTags are fiducial markers placed on the field for robot vision and localization."},
+  {page:70, text:"A MATCH has a Pre-MATCH setup, an Autonomous Period, a Driver-Controlled Period, and an End Game."},
+  {page:90, text:"Robot rules govern design, fabrication, motors, actuators, power distribution, control systems, sensors, pneumatics, and the OPERATOR CONSOLE."},
+  {page:110,text:"Pneumatic systems and airflow devices are governed by the ROBOT Construction Rules."},
+  {page:130,text:"Tournament rules cover Qualification MATCHES, Playoff MATCHES, Dual Division play, League Play, and the FIRST Championship."},
+  {page:150,text:"The Head REFEREE has final authority on all scoring and penalty decisions."},
+  {page:171,text:"End of the 2026-2027 FIRST Tech Challenge Competition Manual, version TU07."}
+];
+
+/* ============================================================
+   BUILD SEARCHABLE CHUNKS
+   ============================================================ */
+let chunks = [];
 let ready = false;
 
-/* ---------- Load and index the full manual ---------- */
-async function loadManual() {
-  const status = document.getElementById('status');
-  try {
-    const res = await fetch('manual.txt');
-    if (!res.ok) throw new Error('manual.txt not found');
-    let raw = await res.text();
+function buildChunks() {
+  chunks = [];
+  const raw = EMBEDDED_MANUAL.trim();
 
-    // Normalize whitespace but keep page breaks if present
-    raw = raw.replace(/\r/g, '');
-
-    // If the text has form-feed page breaks (\f), split by page
-    const pages = raw.includes('\f') ? raw.split('\f') : null;
-
-    if (pages && pages.length > 50) {
-      // We have real page boundaries
-      pages.forEach((p, i) => {
+  if (raw.length > 500) {
+    const clean = raw.replace(/\r/g, '');
+    if (clean.includes('\f') && clean.split('\f').length > 50) {
+      clean.split('\f').forEach((p, i) => {
         const t = p.replace(/\s+/g, ' ').trim();
         if (t.length > 40) chunks.push({ page: i + 1, text: t });
       });
     } else {
-      // Fallback: chunk by ~900 chars, estimate page numbers
-      const clean = raw.replace(/\s+/g, ' ').trim();
+      const flat = clean.replace(/\s+/g, ' ').trim();
       const size = 900;
-      for (let i = 0; i < clean.length; i += size) {
-        const t = clean.slice(i, i + size);
-        const estPage = Math.floor(i / (clean.length / 171)) + 1;
-        if (t.length > 40) chunks.push({ page: Math.min(estPage, 171), text: t });
+      for (let i = 0; i < flat.length; i += size) {
+        const t = flat.slice(i, i + size);
+        const estPage = Math.min(171, Math.floor((i / flat.length) * 171) + 1);
+        if (t.length > 40) chunks.push({ page: estPage, text: t });
       }
     }
-
-    ready = true;
-    status.textContent = `Manual loaded: ${chunks.length} indexed passages across 171 pages. Ready.`;
-  } catch (err) {
-    status.textContent = 'Could not load manual.txt. Place manual.txt in the same folder as ai.html.';
-    console.error(err);
   }
-}
-loadManual();
 
-/* ---------- Search the manual ---------- */
-const STOP = new Set(['the','a','an','is','are','of','to','in','on','for','and','or','what','how','do','does','can','i','my','we','it','this','that','with','be','by','at','as','from','if','not','you','your']);
+  const usingReal = chunks.length > 0;
+  if (!usingReal) chunks = builtInIndex.slice();
+
+  ready = true;
+  document.getElementById('status').textContent = usingReal
+    ? 'Ready. ' + chunks.length + ' passages indexed from the full manual.'
+    : 'Ready. ' + chunks.length + ' built-in passages. Paste your manual text for full coverage.';
+}
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+const stopwords = new Set(['the','a','an','is','are','was','were','of','to','in','on','for','and','or','what','how','does','do','can','i','my','we','it','this','that','with','about','from','be','by','at','as','if','when','which','who','why','rule','rules']);
 
 function tokenize(s) {
-  return s.toLowerCase().replace(/[^a-z0-9. ]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !STOP.has(w));
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !stopwords.has(w));
 }
 
-function searchManual(query) {
-  const qTokens = tokenize(query);
-  if (!qTokens.length || !chunks.length) return [];
+function search(query) {
+  const terms = tokenize(query);
+  if (!terms.length) return [];
 
   const scored = chunks.map(c => {
-    const text = c.text.toLowerCase();
+    const hay = c.text.toLowerCase();
     let score = 0;
-    for (const tok of qTokens) {
-      const occurrences = text.split(tok).length - 1;
-      if (occurrences > 0) score += occurrences * (tok.length > 5 ? 3 : 2);
-    }
-    return { ...c, score };
+    terms.forEach(t => {
+      const matches = hay.split(t).length - 1;
+      if (matches > 0) score += matches * (t.length > 4 ? 2 : 1);
+    });
+    return { chunk: c, score };
   });
 
   return scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
 }
 
-/* ---------- Chat UI ---------- */
+function answer(query) {
+  const results = search(query);
+  if (!results.length) {
+    return "I couldn't find that in the indexed text. Try different keywords, or a rule number like G14, R5, or T7.";
+  }
+
+  let reply = '';
+  results.forEach((r, i) => {
+    const snippet = r.chunk.text.length > 420
+      ? r.chunk.text.slice(0, 420).trim() + '...'
+      : r.chunk.text;
+    reply += '<b>Passage ' + (i + 1) + ' (page ~' + r.chunk.page + ')</b>\n' + snippet + '\n\n';
+  });
+  reply += '<i>Based on the indexed manual text. Always confirm against the official PDF before competition.</i>';
+  return reply;
+}
+
+/* ============================================================
+   UI
+   ============================================================ */
 function addMsg(text, who) {
   const log = document.getElementById('chat-log');
   const div = document.createElement('div');
@@ -139,28 +182,13 @@ function addMsg(text, who) {
 function sendMessage() {
   const input = document.getElementById('user-input');
   const q = input.value.trim();
-  if (!q) return;
+  if (!q || !ready) return;
   addMsg(q.replace(/</g, '&lt;'), 'user');
   input.value = '';
-
-  if (!ready) {
-    addMsg('The manual is still loading. Please wait a moment and try again.', 'bot');
-    return;
-  }
-
-  const results = searchManual(q);
-  if (!results.length) {
-    addMsg('I could not find that in the manual. Try rephrasing with keywords like <b>HIVE</b>, <b>AprilTag</b>, <b>penalty</b>, <b>motor</b>, or a rule number such as <b>G14</b>.', 'bot');
-    return;
-  }
-
-  let reply = '';
-  results.forEach((r, i) => {
-    reply += `<b>Page ~${r.page}</b>\n${r.text}\n`;
-    if (i < results.length - 1) reply += '\n---\n\n';
-  });
-  addMsg(reply, 'bot');
+  addMsg(answer(q), 'bot');
 }
+
+buildChunks();
 </script>
 </body>
 </html>
