@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Ask quick BIOBUZZ 2026-2027 FIRST Tech Challenge questions and get season guidance.">
+  <title>FTC AI - FTC Quiz</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .chat-wrap { display: flex; flex-direction: column; gap: 14px; }
+    .chat-log {
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 320px; max-height: 60vh; overflow-y: auto;
+      padding: 16px; border-radius: 18px;
+      background: rgba(92,200,255,.05);
+      border: 1px solid rgba(92,200,255,.2);
+    }
+    .msg { max-width: 85%; padding: 12px 14px; border-radius: 14px; line-height: 1.5; }
+    .msg.user { align-self: flex-end; background: rgba(92,200,255,.18); border: 1px solid rgba(92,200,255,.35); }
+    .msg.bot  { align-self: flex-start; background: rgba(255,200,87,.10); border: 1px solid rgba(255,200,87,.30); }
+    .msg .who { font-size: .75rem; opacity: .7; margin-bottom: 4px; letter-spacing: .05em; text-transform: uppercase; }
+    .chat-form { display: flex; gap: 10px; }
+    .chat-form input {
+      flex: 1; padding: 12px 14px; border-radius: 12px; font: inherit;
+      background: rgba(255,255,255,.06); color: inherit;
+      border: 1px solid rgba(92,200,255,.3); outline: none;
+    }
+    .chat-form input:focus { border-color: rgba(92,200,255,.7); }
+    .chat-form button {
+      padding: 12px 18px; border-radius: 12px; font: inherit; cursor: pointer;
+      background: linear-gradient(135deg, #5cc8ff, #8a7dff); color: #07111f;
+      border: none; font-weight: 700;
+    }
+    .chat-form button:disabled { opacity: .5; cursor: not-allowed; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .suggestions button {
+      padding: 8px 12px; border-radius: 999px; font: inherit; cursor: pointer;
+      background: rgba(92,200,255,.10); color: inherit;
+      border: 1px solid rgba(92,200,255,.3);
+    }
+    .suggestions button:hover { background: rgba(92,200,255,.2); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">FTC Quiz</a>
+    <span class="season">2026-2027 Season</span>
+  </header>
+
+  <main>
+    <section class="home-card" aria-labelledby="page-title">
+      <p class="eyebrow">FIRST Tech Challenge</p>
+      <h1 id="page-title">BIOBUZZ AI</h1>
+      <p class="intro">Ask quick questions about the 2026-2027 BIOBUZZ season. Answers are drawn from a built-in study guide based on the official Competition Manual (TU07).</p>
+
+      <div class="chat-wrap">
+        <div class="chat-log" id="chat-log" aria-live="polite" aria-label="Chat history">
+          <div class="msg bot">
+            <div class="who">FTC AI</div>
+            Hi! Ask me about BIOBUZZ rules, game elements, match structure, or scoring.
+          </div>
+        </div>
+
+        <div class="suggestions" id="suggestions">
+          <button type="button" data-q="What is BIOBUZZ?">What is BIOBUZZ?</button>
+          <button type="button" data-q="How long is a match?">Match length</button>
+          <button type="button" data-q="What are the game elements?">Game elements</button>
+          <button type="button" data-q="What is Gracious Professionalism?">Gracious Professionalism</button>
+          <button type="button" data-q="What are the fouls?">Fouls and penalties</button>
+        </div>
+
+        <form class="chat-form" id="chat-form" autocomplete="off">
+          <input id="chat-input" type="text" placeholder="Ask a BIOBUZZ question..." aria-label="Your question" required>
+          <button type="submit" id="chat-send">Send</button>
+        </form>
+      </div>
+
+      <p class="footnote">For official rules, always check the <a href="https://ftc-resources.firstinspires.org/ftc/game/manual" target="_blank" rel="noopener noreferrer">2026-2027 FTC Competition Manual (TU07)</a>.</p>
+    </section>
+  </main>
+
+  <script>
+    // ---------- Knowledge base drawn from the BIOBUZZ 2026-2027 Manual (TU07) ----------
+    const KB = [
+      {
+        keys: ["what is biobuzz", "biobuzz", "season", "game", "2026", "2027"],
+        answer: "BIOBUZZ is the 2026-2027 FIRST Tech Challenge game, presented by RTX. It is a full FTC season that kicks off in September and runs through March, with capstone events held April through July."
+      },
+      {
+        keys: ["first", "about first", "what is first", "for inspiration"],
+        answer: "FIRST (For Inspiration and Recognition of Science and Technology) is a nonprofit advancing STEM education. Its mission is to provide life-changing robotics programs that give young people the skills, confidence, and resilience to build a better world."
+      },
+      {
+        keys: ["gracious professionalism", "core values", "ethos", "woodie flowers"],
+        answer: "Gracious Professionalism is part of the FIRST ethos. It encourages high-quality work, emphasizes the value of others, and respects the community. Fierce competition and mutual gain coexist, with no trash talking and no disingenuous platitudes. The term was coined by Dr. Woodie Flowers (1943-2019)."
+      },
+      {
+        keys: ["spirit of the competition", "competition integrity", "cic", "integrity contract"],
+        answer: "The Spirit of the Competition and the Competition Integrity Contract (CIC) are covered in Sections 1.4 and 1.5 of the manual. They set expectations for fair play, honesty, and respect between teams and volunteers."
+      },
+      {
+        keys: ["match length", "how long", "match time", "two minute", "2 minutes", "30 seconds", "autonomous", "driver controlled", "teleop", "endgame", "periods"],
+        answer: "A BIOBUZZ MATCH has three parts (Section 10.4): a 30-second Autonomous period, a 2-minute Driver-Controlled period, and any endgame scoring inside that driver-controlled period. Total MATCH time is about 2 minutes 30 seconds."
+      },
+      {
+        keys: ["game element", "game elements", "hive", "flower", "field", "arena", "scoring element", "scoring elements", "april tag", "apriltag", "tile"],
+        answer: "The ARENA (Section 9) includes the FIELD, the HIVE Structure (9.6), the FLOWER (9.7), and the SCORING ELEMENTS (9.8). It also covers TILE Coordinates (9.4), ALLIANCE AREA (9.5), AprilTags (9.9), FIELD STAFF (9.10), and the Event Management System (9.11)."
+      },
+      {
+        keys: ["score", "scoring", "points", "how do you score", "point value"],
+        answer: "Scoring is defined in Section 10.5 of the manual. Points come from placing and manipulating SCORING ELEMENTS in their designated zones across the Autonomous and Driver-Controlled periods. Exact values change per season, so always check the current manual."
+      },
+      {
+        keys: ["foul", "fouls", "penalty", "penalties", "violation", "violations", "major foul", "minor foul"],
+        answer: "Violations are covered in Section 10.6 of the manual. FTC typically uses minor fouls (5 points) and major fouls (15 points) awarded to the opposing ALLIANCE, plus yellow and red cards for serious infractions. See 10.6 for exact cases."
+      },
+      {
+        keys: ["starterbot", "starter bot", "base robot", "starter kit"],
+        answer: "Robots can be fully built from a basic Starter Kit, fully fabricated from custom designs, or a mix of both. Advanced manufacturing is optional, not required, which keeps FTC accessible to any team."
+      },
+      {
+        keys: ["robot construction", "robot rules", "construction rules", "r rules", "build rules", "motors", "pneumatic", "power distribution"],
+        answer: "ROBOT construction rules are in Section 12. Key sub-sections: General ROBOT Design (12.1), Fair Play and Damage Prevention (12.2), Fabrication (12.3), ROBOT SIGN Rules (12.4), Motors and Actuators (12.5), Power Distribution (12.6), Control System (12.7), Pneumatics (12.8), and OPERATOR CONSOLE (12.9)."
+      },
+      {
+        keys: ["game rules", "g rules", "conduct", "safety", "pre match", "in match"],
+        answer: "Game Rules are in Section 11: Personal Safety (11.1), Conduct (11.2), Pre-MATCH (11.3), and In-MATCH (11.4). These cover everything from safe behavior in the pits to what is legal during a MATCH."
+      },
+      {
+        keys: ["tournament", "t rules", "qualification", "playoff", "replay", "question box", "dual division"],
+        answer: "Tournament rules are in Section 13: Overview (13.1), MATCH Replays (13.2), Question Box clarifications (13.3), General Tournament Rules (13.4), Practice MATCHES (13.5), Qualification MATCHES (13.6), Playoff MATCHES (13.7), and Dual Division Events (13.8)."
+      },
+      {
+        keys: ["league", "league play", "l rules"],
+        answer: "League Play Tournaments are covered in Section 14 of the manual. Leagues spread Qualification MATCHES across multiple events before a League Tournament Championship."
+      },
+      {
+        keys: ["championship", "first championship", "c rules", "3 robot", "three robot", "pit crew"],
+        answer: "FIRST Championship rules are in Section 15: Awards Modifications (15.1), Game Modification (15.2), 3-ROBOT ALLIANCES (15.3), FIRST Championship Pit Crews (15.4), and FIRST Championship Playoffs (15.5)."
+      },
+      {
+        keys: ["inspection", "eligibility", "i rules", "team eligibility"],
+        answer: "Competition Eligibility and Inspection rules are in Section 3: Team Eligibility (3.1), Awards Eligibility (3.2), and MATCH Eligibility (3.3)."
+      },
+      {
+        keys: ["advancement", "advancement points", "how do you advance"],
+        answer: "Advancement is in Section 4: Advancement Points Calculation (4.1) and Advancement Distribution by Region (4.2). Teams earn points through judged awards and on-field performance."
+      },
+      {
+        keys: ["award", "awards", "a rules", "judged award", "alliance award"],
+        answer: "Awards are in Section 6: Team Judged Awards Overview (6.1), Rules (6.2), and Descriptions (6.3), Tournament ALLIANCE Awards (6.4), Individual Awards (6.5), and Project-Based Global Awards (6.6)."
+      },
+      {
+        keys: ["event rules", "e rules", "pits", "load in", "wireless", "robot cart", "ceremonies"],
+        answer: "Event Rules are in Section 5: General Rules (5.1), Machine Shops (5.2), Wireless Rules (5.3), Load-In (5.4), Pits (5.5), ROBOT Carts (5.6), and Ceremonies (5.7)."
+      },
+      {
+        keys: ["manual", "rule", "rules", "official", "tu07", "version"],
+        answer: "The official rules live in the FTC Competition Manual. For BIOBUZZ 2026-2027, the current revision is TU07, available at ftc-resources.firstinspires.org/ftc/game/manual."
+      },
+      {
+        keys: ["glossary", "terms", "definitions"],
+        answer: "The Glossary is Section 16 of the manual. It defines technical terms used throughout, such as MATCH, ALLIANCE, ARENA, and SCORING ELEMENT."
+      }
+    ];
+
+    // ---------- DOM ----------
+    const log = document.getElementById("chat-log");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("chat-send");
+    const suggestions = document.getElementById("suggestions");
+
+    function addMsg(text, who) {
+      const el = document.createElement("div");
+      el.className = "msg " + who;
+      const label = document.createElement("div");
+      label.className = "who";
+      label.textContent = who === "user" ? "You" : "FTC AI";
+      const body = document.createElement("div");
+      body.textContent = text;
+      el.appendChild(label);
+      el.appendChild(body);
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function findAnswer(q) {
+      const s = q.toLowerCase().trim();
+      let best = null;
+      let bestScore = 0;
+      for (const item of KB) {
+        let score = 0;
+        for (const k of item.keys) {
+          if (s.includes(k)) score += k.length;
+        }
+        if (score > bestScore) {
+          bestScore = score;
+          best = item;
+        }
+      }
+      return best ? best.answer : null;
+    }
+
+    function handleQuestion(q) {
+      addMsg(q, "user");
+      const answer = findAnswer(q);
+      setTimeout(function () {
+        if (answer) {
+          addMsg(answer, "bot");
+        } else {
+          addMsg("I do not have a specific answer for that yet. Try asking about the ARENA, match periods, scoring, fouls, ROBOT construction, tournaments, awards, or the manual version. For anything else, check the official manual at ftc-resources.firstinspires.org/ftc/game/manual.", "bot");
+        }
+      }, 250);
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+      input.value = "";
+      handleQuestion(q);
+    });
+
+    suggestions.addEventListener("click", function (e) {
+      const btn = e.target.closest("button[data-q]");
+      if (!btn) return;
+      handleQuestion(btn.dataset.q);
+    });
+  </script>
+</body>
+</html>
