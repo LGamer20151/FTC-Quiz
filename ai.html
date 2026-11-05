@@ -7,111 +7,117 @@
   <title>FTC Game Manual AI</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    .chat-card { display: flex; flex-direction: column; height: calc(100vh - 140px); max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(92, 200, 255, 0.15); border-radius: 18px; overflow: hidden; }
-    .chat-window { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-    .msg { max-width: 80%; padding: 12px 16px; border-radius: 14px; line-height: 1.5; font-size: 0.95rem; word-wrap: break-word; }
-    .msg.user { background-color: #ff9f43; color: #07111f; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .msg.ai { background: rgba(255, 255, 255, 0.08); color: #e8f4ff; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid rgba(232, 244, 255, 0.1); }
-    .chat-input-wrapper { display: flex; padding: 15px; background: rgba(7, 17, 31, 0.95); border-top: 1px solid rgba(92, 200, 255, 0.15); gap: 10px; }
-    .chat-input-wrapper input { flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(232, 244, 255, 0.2); border-radius: 8px; padding: 12px; color: #fff; font-size: 1rem; }
-    .chat-input-wrapper button { background: #5cc8ff; color: #07111f; border: none; padding: 0 22px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-    .key-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 17, 31, 0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-content { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 16px; border: 1px solid rgba(92, 200, 255, 0.3); text-align: center; max-width: 450px; width: 100%; }
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      max-width: 800px;
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(92, 200, 255, 0.15);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .chat-window {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .msg {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      word-wrap: break-word;
+    }
+    .msg.user {
+      background-color: #ff9f43;
+      color: #07111f;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+    .msg.ai {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e8f4ff;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      border: 1px solid rgba(232, 244, 255, 0.1);
+    }
+    .chat-input-wrapper {
+      display: flex;
+      padding: 15px;
+      background: rgba(7, 17, 31, 0.95);
+      border-top: 1px solid rgba(92, 200, 255, 0.15);
+      gap: 10px;
+    }
+    .chat-input-wrapper input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(232, 244, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 1rem;
+    }
+    .chat-input-wrapper button {
+      background: #5cc8ff;
+      color: #07111f;
+      border: none;
+      padding: 0 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body>
-
-  <div id="keyModal" class="key-modal">
-    <div class="modal-content">
-      <h3 style="color: #ff9f43; margin-top:0;">Gemini API Configuration</h3>
-      <p style="font-size:0.95rem; color:#8fb7d8;">Enter your API key from Google AI Studio to launch the assistant chat window:</p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:12px; margin: 15px 0; border-radius:8px; border:1px solid rgba(92,200,255,0.3); color:#fff; background: rgba(0,0,0,0.3);">
-      <br>
-      <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:12px 24px; font-weight:bold; border-radius:8px; cursor:pointer;">Initialize Engine</button>
-    </div>
-  </div>
-
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ AI Assistant</span>
+    <span class="season">BIOBUZZ™ Static Rule Matcher</span>
   </header>
-  
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
-          <strong>🤖 BIOBUZZ Robot AI:</strong><br>
-          Rule Engine online! Ask me anything about the 2026-2027 Competition rules, safety margins, points, or inspection criteria.
+          <strong>🤖 BIOBUZZ Rule Matcher:</strong><br>
+          Hello! Search any keywords or rules to instantly fetch matching manual entries.
         </div>
       </div>
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Enter API Key first..." disabled onkeypress="if(event.key==='Enter') handleQuery()">
-        <button id="sendBtn" onclick="handleQuery()" disabled>Send</button>
+        <input type="text" id="queryInput" placeholder="Type a rule number or keywords..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <button onclick="handleQuery()">Search</button>
       </div>
     </section>
   </main>
-
   <script>
-    let userApiKey = "";
-
-    function saveApiKey() {
-      const key = document.getElementById('apiKeyInput').value.trim();
-      if(!key) { alert("Please input your Gemini API Key."); return; }
-      userApiKey = key;
-      document.getElementById('keyModal').style.display = 'none';
-      document.getElementById('queryInput').disabled = false;
-      document.getElementById('queryInput').placeholder = "Ask a rule question...";
-      document.getElementById('sendBtn').disabled = false;
-    }
-
-    async function handleQuery() {
+    const manualDatabase = []; // Populated with local FTC game manual rule definitions
+    function handleQuery() {
       const inputEl = document.getElementById('queryInput');
       const text = inputEl.value.trim();
       if (!text) return;
-
       appendMessage(text, 'user');
       inputEl.value = '';
-      const loadNode = appendMessage('Consulting live document files...', 'ai');
-
-      try {
-        const sysInst = "You are an expert AI assistant specialized in the 2026-2027 FIRST Tech Challenge Competition Manual (BIOBUZZ presented by RTX). Analyze the user question. Ground your guidance using official rule codes (e.g. E101, I102, R, G, T) where applicable. If the context falls outside manual references, state that you cannot verify it.";
-        const combinedPrompt = `DOCUMENT LINK REFERENCE: https://firstinspires.org\n\nUSER QUESTION: ${text}`;
-        
-        const apiTarget = "https://googleapis.com" + userApiKey;
-
-        const response = await fetch(apiTarget, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: combinedPrompt }] }],
-            systemInstruction: { parts: [{ text: sysInst }] },
-            generationConfig: { temperature: 0.2 }
-          })
-        });
-
-        const data = await response.json();
-        if (data.error) {
-          loadNode.innerText = "API Error: " + data.error.message;
-          return;
-        }
-
-        let answer = data.candidates[0].content.parts[0].text;
-        answer = answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        loadNode.innerHTML = "<strong>🤖 BIOBUZZ Robot AI:</strong><br>" + answer;
-      } catch (err) {
-        loadNode.innerText = "Network transmission error. Check your key connection.";
-        console.error(err);
-      }
+      let results = manualDatabase.filter(entry => 
+        entry.code.toLowerCase().includes(text.toLowerCase()) || 
+        entry.rule.toLowerCase().includes(text.toLowerCase())
+      );
+      let aiResponseText = results.length > 0 
+        ? `I found ${results.length} matching manual entries:<br><br>` + results.map(e => `<strong>[${e.code}]</strong> ${e.rule}`).join("<br><br>")
+        : "I couldn't find an exact match for that query in the manual database.";
+      setTimeout(() => appendMessage(aiResponseText, 'ai'), 300);
     }
-
     function appendMessage(msgText, sender) {
       const windowEl = document.getElementById('chatWindow');
       const div = document.createElement('div');
-      div.className = "msg " + sender;
-      div.innerText = msgText;
+      div.className = `msg ${sender}`;
+      div.innerHTML = msgText;
       windowEl.appendChild(div);
       windowEl.scrollTop = windowEl.scrollHeight;
-      return div;
     }
   </script>
 </body>
