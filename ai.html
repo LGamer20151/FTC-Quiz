@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07111f">
-  <title>FTC Game Manual AI</title>
+  <title>FTC Master Reference Engine</title>
   <link rel="stylesheet" href="style.css">
   <style>
     .chat-card {
@@ -18,7 +18,6 @@
       border-radius: 18px;
       overflow: hidden;
     }
-    
     .chat-window {
       flex: 1;
       padding: 20px;
@@ -27,31 +26,28 @@
       flex-direction: column;
       gap: 15px;
     }
-
     .msg {
-      max-width: 80%;
-      padding: 12px 16px;
+      max-width: 85%;
+      padding: 14px 18px;
       border-radius: 14px;
-      line-height: 1.5;
+      line-height: 1.6;
       font-size: 0.95rem;
       word-wrap: break-word;
     }
-
     .msg.user {
       background-color: #ff9f43;
       color: #07111f;
       align-self: flex-end;
       border-bottom-right-radius: 2px;
+      font-weight: 500;
     }
-
     .msg.ai {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.07);
       color: #e8f4ff;
       align-self: flex-start;
       border-bottom-left-radius: 2px;
-      border: 1px solid rgba(232, 244, 255, 0.1);
+      border: 1px solid rgba(232, 244, 255, 0.08);
     }
-
     .chat-input-wrapper {
       display: flex;
       padding: 15px;
@@ -59,35 +55,44 @@
       border-top: 1px solid rgba(92, 200, 255, 0.15);
       gap: 10px;
     }
-
     .chat-input-wrapper input {
       flex: 1;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(232, 244, 255, 0.2);
       border-radius: 8px;
-      padding: 12px;
+      padding: 14px;
       color: #fff;
       font-size: 1rem;
     }
-
     .chat-input-wrapper input:focus {
       outline: none;
       border-color: #5cc8ff;
     }
-
     .chat-input-wrapper button {
       background: #5cc8ff;
       color: #07111f;
       border: none;
-      padding: 0 22px;
+      padding: 0 24px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
       font-size: 1rem;
     }
-
-    .chat-input-wrapper button:hover {
-      background: #3cb8f5;
+    .chat-input-wrapper button:hover { background: #3cb8f5; }
+    .section-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      background: rgba(92, 200, 255, 0.15);
+      color: #5cc8ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .rule-title {
+      font-size: 1.1rem;
+      color: #ff9f43;
+      margin: 4px 0;
     }
   </style>
 </head>
@@ -95,107 +100,58 @@
 
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Master Database Engine</span>
+    <span class="season">BIOBUZZ™ Pages 1 - 171 Complete Engine</span>
   </header>
   
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
-          <strong>🤖 Master BIOBUZZ Database AI:</strong><br>
-          I now contain the complete operating knowledge of the 2026-2027 season! Say hi or ask me about sizing, motors, game pieces, flowers, hives, or checkpoints.
+          <strong>🤖 Master 1-171 Manual Matrix Online:</strong><br>
+          I have fully integrated the master content library spanning all 171 pages of the official documentation. Ask me any precise rule item or section code!
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Ask any question (e.g., 'hi', 'how many motors are allowed')..." onkeypress="if(event.key === 'Enter') handleQuery()">
-        <button onclick="handleQuery()">Ask</button>
+        <input type="text" id="queryInput" placeholder="Search rules (e.g., '10.4', 'E505', 'Nectar', 'Inspire Award')..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <button onclick="handleQuery()">Search</button>
       </div>
     </section>
   </main>
 
   <script>
-    const automatedAnswers = [
+    const comprehensiveMatrix = [
       {
-        keywords: ["hi", "hello", "hey", "yo", "greetings"],
-        response: "🤖 <strong>Hello there!</strong> Welcome to your team's FTC BIOBUZZ knowledge engine. Ask me anything about the rules, motors, balls, sizing constraints, or timing rules, and I will pull up the exact specifications instantly!"
+        pageRange: "1-18",
+        section: "1.0 Introduction & Ethos",
+        keys: ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "introduction", "gracious professionalism", "gp", "coopertition", "core values", "ethics", "cic", "contract", "mentor", "q&a", "updates"],
+        text: "<span class='section-tag'>Pages 1-18 • Section 1</span><div class='rule-title'>FIRST Ethos, Values, & Document Usage</div>• <strong>About FIRST (1.1):</strong> world's leading youth-serving non-profit advancing STEM learning.<br>• <strong>Ethos (1.3):</strong> Gracious Professionalism® (fierce competition mixed with unqualified kindness and mutual value). Coopertition® (opponents work together to ensure all perform at their absolute best).<br>• <strong>Core Values (1.3.3):</strong> Discovery, Innovation, Impact, Inclusion, Teamwork, Fun.<br>• <strong>Competition Integrity Contract (CIC - 1.5):</strong> Teams certify: 'We don't cheat, we act with total honor, we play the game as intended, and we don't handle external enforcement rules.'<br>• <strong>Document Conventions (1.7):</strong> Code prefixes indicate core domains: I = Inspection, E = Event, A = Awards, G = Game, R = Robot Construction, T = Tournament, L = League, C = Championship.<br>• <strong>Q&A System (1.7.4):</strong> Official rules clearing platform opening Sept 28, 2026."
       },
       {
-        keywords: ["ball", "balls", "preload", "start with", "starting element", "game piece", "pieces"],
-        response: "<strong>BIOBUZZ Match Setup Criteria (Section 9.8):</strong><br>• Each robot can preload with a maximum of <strong>1 Scoring Element (pollen ball)</strong>.<br>• Initial field inventory elements consist of exactly <strong>40 neutral Pollen spheres</strong> (2.8 inches across) and <strong>16 alliance-colored Nectar spheres</strong> (3.6 inches across, heavier than pollen).<br>• Robots are permitted to hold/control a maximum configuration of up to <strong>4 game pieces simultaneously</strong> in any combination!"
+        pageRange: "19-24",
+        section: "2.0 & 3.0 Registration, Team & Match Eligibility",
+        keys: ["2.0", "3.1", "3.2", "3.3", "i101", "i102", "i103", "eligibility", "check-in", "ready", "roster", "adult", "inspection", "practice"],
+        text: "<span class='section-tag'>Pages 19-24 • Sections 2 & 3</span><div class='rule-title'>Check-In, Eligibility, and Pre-Match Readiness</div>• <strong>Season Theme (2.0):</strong> FIRST CANOPY™ / BIOBUZZ™ presented by RTX.<br>• <strong>Rule I101 (Ready Status):</strong> North American teams must complete annual payment, assign 2 YPP-screened coaches, and catalog all youth members on the main system.<br>• <strong>Rule I102 (Check-in Deadline):</strong> A designated team adult must sign in at Pit Admin no later than <strong>45 minutes before</strong> Qualification Matches start. A student must be physically present at check-in.<br>• <strong>Rule I103 (Adult Coverage):</strong> Minimum of 1 (preferably 2) responsible adults must be inside the venue tracking minor students at all times.<br>• <strong>Practice Matches (3.3):</strong> Scheduled practice matches are allowed prior to clearing inspection, but filler lines are restricted."
       },
       {
-        keywords: ["motor", "servo", "electronics", "limit", "actuator", "i302"],
-        response: "<strong>Rule I302 & Robot Limits:</strong> Teams are strictly limited to a maximum allowance of <strong>8 motors</strong> and <strong>8 servos</strong> total this season! This total applies to all electronics used to build your base drivetrain chassis plus all auxiliary mechanism attachments combined, whether they are running mounted on the robot at the same time or not."
+        pageRange: "21-24",
+        section: "3.3 Robot Structural Inspection & Re-Inspection Rules",
+        keys: ["3.3.1", "3.3.2", "i301", "i302", "i303", "i304", "re-inspection", "reinspect", "components", "fasteners", "identical"],
+        text: "<span class='section-tag'>Pages 21-24 • Section 3.3</span><div class='rule-title'>Robot Inspection Conditions</div>• <strong>Rule I301 (Complete Robot):</strong> Present the base robot, operational console, and all interchangeable mechanisms/decorations at initial inspection.<br>• <strong>Rule I302 (Total Actuators):</strong> Electronic allocation limits (8 motors/8 servos max) apply to the entire aggregated toolset package, whether active or detached.<br>• <strong>Rule I303 (Re-inspection Exceptions):</strong> Major modifications require immediate inspector re-verification. Re-inspection is <strong>NOT required</strong> for: adding minor fasteners (tape, rivets, zip-ties), changing code configuration strings, editing labeling graphics, swapping parts with identical components, or utilizing pre-inspected mechanism sub-configurations."
       },
       {
-        keywords: ["size", "sizing", "cube", "expand", "dimension", "inches"],
-        response: "<strong>Robot Sizing Constraints:</strong> At the immediate start of a match, the robot must fit completely inside a standard <strong>18-inch sizing cube</strong>. After the match begins and the initialization scripts run, the robot can dynamically expand up to maximum operational bounds of <strong>18 x 24 x 29 inches</strong>."
+        pageRange: "25-30",
+        section: "4.0 Tournament Advancement & Point Math",
+        keys: ["4.1", "4.2", "table 4-1", "table 4-2", "advancement", "points", "ranking", "tiebreaker", "sorting", "inspire award", "playoff", "alliance", "slots"],
+        text: "<span class='section-tag'>Pages 25-30 • Section 4</span><div class='rule-title'>Advancement Calculations & Sorting Matrix</div>• <strong>Regional Progression (4.0):</strong> Teams can only advance from events located within their declared HOME REGION.<br>• <strong>Table 4-1 (Advancement Point Values):</strong><br>&nbsp;&nbsp;- <strong>Inspire Award:</strong> 1st = 60 pts, 2nd = 30 pts, 3rd = 15 pts.<br>&nbsp;&nbsp;- <strong>Other Judged Awards (1st):</strong> 12 pts (2nd = 6 pts, 3rd = 3 pts).<br>&nbsp;&nbsp;- <strong>Playoff Phase:</strong> 1st (Winners) = 40 pts, 2nd (Finalists) = 20 pts, 3rd = 10 pts, 4th = 5 pts.<br>&nbsp;&nbsp;- <strong>Alliance Selection:</strong> Points equal 21 minus Alliance Lead Rank or Draft Acceptance position number.<br>• <strong>Table 4-2 (Tiebreaker Order):</strong> 1st Total Advancement Points, 2nd Judged Award Points, 3rd Playoff Points, 4th Alliance Selection Points, 5th Qual Performance Points, 6th Average Qual Points (no fouls), 7th Average Auto Points."
       },
       {
-        keywords: ["hive", "hives", "tip", "tipping", "seesaw"],
-        response: "<strong>Hive Scoring Mechanics:</strong> Robots score by launching pollen or alliance nectar into their respective alliance-specific Hive containers, which sit balanced on a central seesaw array. Tipping a hive cell container down to cross specific balance thresholds awards points. Because Nectar balls are significantly heavier, fewer Nectar pieces are needed to tip the hive compared to Pollen."
+        pageRange: "31-34",
+        section: "5.1 General Event Safety & Behavior Standards",
+        keys: ["5.1", "e101", "e102", "e103", "e104", "e105", "e106", "e107", "safety glasses", "shoes", "conduct", "un-gp", "fabrication"],
+        text: "<span class='section-tag'>Pages 31-34 • Section 5.1</span><div class='rule-title'>General Event Regulations (E)</div>• <strong>Violation Warning Note:</strong> Standard breach of any Section 5 rule results in an immediate <strong>VERBAL WARNING</strong>. Egregious infractions trigger disqualification.<br>• <strong>Rule E101 (Safety Gear):</strong> Wear side-shield ANSI-approved safety glasses (10-minute daily morning arrival grace period). Closed-toed shoes are mandatory. Tie back long hair and lanyards.<br>• <strong>Rule E102 (Behavior):</strong> Incivility is strictly prohibited. Banned acts include 'weaponizing Gracious Professionalism' (publicly tracking/accusing others of being 'Not GP'), yelling in anger, or obstructing spectator views.<br>• <strong>Rule E107 (Work Zones):</strong> Fabrication must happen only inside designated pit spaces or event machine shops."
       },
       {
-        keywords: ["flower", "flowers", "endgame", "topmost", "bottommost"],
-        response: "<strong>Flower Scoring Mechanics (Last 60 Seconds):</strong> Neutral field flowers become active scoring targets during the final 60 seconds of the teleoperated match. Robots drop elements in from the top. Scoring is assessed at the end of the match based on layering: the alliance holding the <strong>bottommost nectar</strong> in a flower scores fixed points, while the alliance holding the <strong>topmost nectar</strong> earns scoring points for every single pollen and nectar element contained inside that entire flower!"
-      },
-      {
-        keywords: ["score", "points", "ranking", "rp", "win"],
-        response: "<strong>Match Points & Rankings (Section 4.1):</strong><br>• <strong>Winning a Match:</strong> 3 Ranking Points (RP).<br>• <strong>Playoff Finish:</strong> Winners receive 40 advancement points; Finalists receive 20 points.<br>• <strong>Inspire Award:</strong> 1st = 60pts, 2nd = 30pts, 3rd = 15pts.<br>• <strong>Other Judged Awards:</strong> 1st = 12pts, 2nd = 6pts, 3rd = 3pts."
-      },
-      {
-        keywords: ["e101", "safety glasses", "shoes", "hair", "eye protection"],
-        response: "<strong>Rule E101 (Personal Safety):</strong> All team members must wear safety glasses in specified areas (with a 10-minute morning grace window). Closed-toed/heeled shoes are strictly mandatory. Long hair and dangling items (like lanyards) must be tied back while working on the robot."
-      },
-      {
-        keywords: ["i102", "check in", "pit admin", "late", "deadline"],
-        response: "<strong>Rule I102 (Event Check-In):</strong> An adult team member must check-in at the Pit Administration station no later than <strong>45 minutes before</strong> Qualification Matches are scheduled to start. At least one student teammate must be physically present at the venue before check-in can be finalized."
-      },
-      {
-        keywords: ["i303", "reinspection", "change", "re-inspect", "modify"],
-        response: "<strong>Rule I303 (Re-inspection Rules):</strong> Most changes require re-inspection. However, it is <strong>NOT necessary</strong> for replacing identical components, modifying code, switching identical mechanisms, or editing fasteners (tape, zip ties, rivets)."
-      },
-      {
-        keywords: ["e301", "wi-fi", "wifi", "bluetooth", "hotspot", "network"],
-        response: "<strong>Rule E301 (Wireless Rule):</strong> Teams may not set up their own Wi-Fi access points, ad-hoc networks, mobile hotspots, or custom wireless communications networks using 2.4GHz or 5GHz bands in the venue. Standard Bluetooth devices can also cause interference and are banned near the fields."
-      },
-      {
-        keywords: ["e504", "grinder", "flame", "welding", "torch", "spark"],
-        response: "<strong>Rule E504 (Open Flames & Tools):</strong> Tools that throw sparks or produce open flames are prohibited. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters used briefly to melt frayed rope edges are generally acceptable."
-      },
-      {
-        keywords: ["e505", "3d printer", "machinery", "pit tool", "drill press"],
-        response: "<strong>Rule E505 (Pit Machinery):</strong> Only small benchtop machinery that can be easily lifted by one single person is permitted inside your pit space (e.g., 3D printers, small band saws, desktop CNC mills). Floor-standing power tools are completely banned."
-      }
-    ];
-
-    function handleQuery() {
-      const inputEl = document.getElementById('queryInput');
-      const text = inputEl.value.trim().toLowerCase();
-      if (!text) return;
-
-      appendMessage(inputEl.value.trim(), 'user');
-      inputEl.value = '';
-
-      let foundResponse = "";
-
-      for (let item of automatedAnswers) {
-        let match = item.keywords.some(word => text.includes(word));
-        if (match) {
-          foundResponse = item.response;
-          break;
-        }
-      }
-
-      if (!foundResponse) {
-        foundResponse = "I couldn't find a direct record for that phrase in my seasonal rule database tree. Try querying terms like <strong>'hi'</strong>, <strong>'size'</strong>, <strong>'motors'</strong>, <strong>'hive'</strong>, <strong>'flowers'</strong>, <strong>'balls'</strong>, or <strong>'safety glasses'</strong>!";
-      }
-
-      setTimeout(() => {
-        appendMessage(foundResponse, 'ai');
-      }, 300);
-    }
-
-    function appendMessage(msgText, sender) {
-      const windowEl = document.getElementById('chatWindow');
+        pageRange: "33-35",
+        section: "5.1 & 5.3 Banned Items & Venue Wireless Parameters",
+        keys: ["e108", "e109", "e110", "e111", "e112", "e113", "e114", "e301", "e302", "banned", "weapons", "helium", "wifi", "hotspot", "bluetooth", "banner"],
