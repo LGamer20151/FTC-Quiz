@@ -103,12 +103,12 @@
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
           <strong>🤖 BIOBUZZ Rule Matcher:</strong><br>
-          Hello! Ask me any question about the 2026-2027 Competition rules, safety guidelines, checking in, or pit constraints. I will instantly find your answer!
+          Hello! Ask me any question about the 2026-2027 Competition rules, safety guidelines, checking in, preloads, or pit constraints. I will instantly find your answer!
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Type your rule question here (e.g., 'What is rule E101?')..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <input type="text" id="queryInput" placeholder="Type your rule question here (e.g., 'how many balls does the robot start with')..." onkeypress="if(event.key === 'Enter') handleQuery()">
         <button onclick="handleQuery()">Ask</button>
       </div>
     </section>
@@ -116,6 +116,10 @@
 
   <script>
     const automatedAnswers = [
+      {
+        keywords: ["ball", "balls", "preload", "start with", "starting element"],
+        response: "<strong>BIOBUZZ Match Setup Criteria (Section 9.8):</strong> During the formal pre-match layout configuration, each robot can be preloaded with a maximum of <strong>1 Scoring Element (pollen ball element)</strong>. The remaining game elements start stored directly inside the arena's tracking zones, storage structures, and HIVE layouts."
+      },
       {
         keywords: ["e101", "safety glasses", "shoes", "hair", "eye protection"],
         response: "<strong>Rule E101 (Personal Safety):</strong> All team members must wear safety glasses in specified areas (with a 10-minute morning grace window). Closed-toed/heeled shoes are strictly mandatory. Long hair and dangling items (like lanyards) must be tied back while working on the robot."
@@ -169,7 +173,7 @@
       }
 
       if (!foundResponse) {
-        foundResponse = "I couldn't find an exact match for that question. Try asking specifically about phrases like: <strong>'safety glasses'</strong>, <strong>'check in'</strong>, <strong>'wi-fi'</strong>, <strong>'3d printer'</strong>, or specific rule numbers like <strong>'E101'</strong> or <strong>'I102'</strong>!";
+        foundResponse = "I couldn't find an exact match for that question. Try asking specifically about phrases like: <strong>'how many balls does the robot start with'</strong>, <strong>'safety glasses'</strong>, <strong>'check in'</strong>, <strong>'wi-fi'</strong>, <strong>'3d printer'</strong>, or specific rule numbers like <strong>'E101'</strong> or <strong>'I102'</strong>!";
       }
 
       setTimeout(() => {
