@@ -6,11 +6,8 @@
   <meta name="theme-color" content="#07111f">
   <title>FTC Game Manual AI</title>
   <link rel="stylesheet" href="style.css">
-  
-  <!-- Load Pyodide for Browser-Side Python Processing -->
-  <script src="https://jsdelivr.net"></script>
-
   <style>
+    /* Clean layout formatting for chat window */
     .chat-card {
       display: flex;
       flex-direction: column;
@@ -88,14 +85,13 @@
       font-weight: bold;
       cursor: pointer;
       font-size: 1rem;
-      transition: background 0.2s;
     }
 
     .chat-input-wrapper button:hover {
       background: #3cb8f5;
     }
 
-    /* Modal for Key input */
+    /* Modal dialog configuration for secure initialization */
     .key-modal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -118,12 +114,12 @@
 </head>
 <body>
 
-  <!-- API Key Setup Modal Overlay -->
+  <!-- Input API Key Modal Overlaid Layout -->
   <div id="keyModal" class="key-modal">
     <div class="modal-content">
       <h3 style="color: #ff9f43; margin-top:0;">Gemini API Configuration</h3>
-      <p style="font-size:0.9rem; color:#8fb7d8;">To process client-side manual searches, enter a Gemini API Key from Google AI Studio:</p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:10px; margin: 15px 0; border-radius:6px; border:1px solid #ccc; font-size:16px;">
+      <p style="font-size:0.9rem; color:#8fb7d8;">Enter your Gemini API key from Google AI Studio to chat securely directly inside your browser:</p>
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:10px; margin: 15px 0; border-radius:6px; border:1px solid #ccc; font-size:16px; color:#000;">
       <br>
       <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:10px 20px; font-weight:bold; border-radius:6px; cursor:pointer;">Initialize Engine</button>
     </div>
@@ -131,91 +127,71 @@
 
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Client-Side AI</span>
+    <span class="season">BIOBUZZ™ Static Reference AI</span>
   </header>
   
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
-        <div class="msg ai" id="initMessage">
-          <strong>🤖 BIOBUZZ System Status:</strong> Waiting for Python environment and WebAssembly compiler initialization...
+        <div class="msg ai">
+          <strong>🤖 BIOBUZZ Robot AI:</strong><br>
+          Rule Engine online! Ask me anything about the 2026-2027 Competition rules, safety margins, points, or inspection criteria.
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Loading manual database..." disabled onkeypress="if(event.key === 'Enter') handleQuery()">
+        <input type="text" id="queryInput" placeholder="Enter API Key first..." disabled onkeypress="if(event.key === 'Enter') handleQuery()">
         <button id="sendBtn" onclick="handleQuery()" disabled>Send</button>
       </div>
     </section>
   </main>
 
   <script>
-    let pyodideInstance = null;
     let userApiKey = "";
 
-    async function saveApiKey() {
+    // Embedded Game Manual Data Archive for zero-latency browser matching
+    const manualContextDatabase = [
+      "Rule I101: Teams must be registered with FIRST and be 'competition ready' to earn points or judged awards. North America requires full team dashboard rosters, paid annual registration fee, and 2 YPP screened adult leads.",
+      "Rule I102: Check-in at the event on time. An adult team member must check-in at Pit Administration no later than 45 minutes before Qualification MATCHES are scheduled to start. At least one STUDENT must be present at the venue during check-in.",
+      "Rule I103: A responsible adult must be present for the whole event. At least 1, preferably 2, adult(s) responsible for the STUDENT team members must be present at all times.",
+      "Rule I301: Bring the complete ROBOT and supporting equipment to inspection. Teams should present the ROBOT and OPERATOR CONSOLE with all COMPONENTS, including decorative parts.",
+      "Rule I302: Total electronics configurations limits apply to all mechanisms and base chassis layout, whether they are running mounted on the robot at the same time or not.",
+      "Rule I303: Request re-inspection for most changes to the ROBOT. Re-inspection is NOT necessary for: A. Fasteners (cable ties, tape, rivets), B. Markings or labeling, C. Team SIGN configurations, D. Code revisions, E. Identical replacement components, F. Identical replacement mechanisms, G. Subsets of inspected mechanisms.",
+      "Rule E101: Personal safety comes first. Mandatory safety practices include: A. Safety glasses worn in specified areas (10-minute morning arrival grace window), B. Closed-toed/heeled shoes, C. Tie back long hair and dangling decorations (lanyards, spirit wear), D. Walk in the venue, E. Comply with health/safety codes.",
+      "Rule E102: Be Respectful. Uncivil behavior is prohibited. Examples of text infractions: 'weaponizing Gracious Professionalism' by calling out others, blocking viewing rows for extended periods, or insulting teammates.",
+      "Rule E103: Children under 12 must be accompanied in the pits by an adult at all times.",
+      "Rule E104: Respect the venue. No damage to bleachers, floors, walls. No littering with giveaways, candies, flyers, or stickers.",
+      "Rule E108: Prohibited items at events: Skateboards, hoverboards, drones, bottled gas tanks (helium), noisy devices/noisemakers (floor stompers, whistles, air horns), and scooters.",
+      "Rule E301: No custom wireless communication. Teams may not set up their own Wi-Fi networks, access points, mobile hotspots, or custom 2.4GHz / 5GHz wireless channels in the venue.",
+      "Rule E504: Open flames and spark-emitting devices are limited and tightly controlled. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters to melt strings are allowed.",
+      "Rule E505: Only small benchtop machinery easily lifted by one person is permitted in team pits (3D printers, small band saws, small drill presses, desktop CNC mills). Floor-standing power tools are prohibited.",
+      "Rule E506 & E507: Brazing and welding are completely prohibited. Soldering is allowed using an electric iron or gun only.",
+      "Section 4.1 & Table 4-1 Point Allocations: Inspire Award 1st Place = 60 points, 2nd Place = 30 points, 3rd Place = 15 points. Other Judged Awards: 1st Place = 12 points, 2nd Place = 6 points, 3rd Place = 3 points. Playoff Advancement Winners get 40 points, Finalists get 20 points."
+    ];
+
+    function saveApiKey() {
       const key = document.getElementById('apiKeyInput').value.trim();
-      if(!key) { alert("Please provide a valid key."); return; }
+      if(!key) { alert("Please input your Gemini API Key."); return; }
       userApiKey = key;
       document.getElementById('keyModal').style.display = 'none';
-      initEngineAndManual();
+      document.getElementById('queryInput').disabled = false;
+      document.getElementById('queryInput').placeholder = "Ask a rule question...";
+      document.getElementById('sendBtn').disabled = false;
     }
 
-    async function initEngineAndManual() {
-      const initMsg = document.getElementById('initMessage');
-      try {
-        // 1. Fire up Pyodide environment natively inside the tab
-        pyodideInstance = await loadPyodide();
-        initMsg.innerHTML = "<strong>🤖 BIOBUZZ System Status:</strong> Python environment active. Installing PDF parser dependencies...";
-        
-        // 2. Fetch micropip package manager and install pypdf
-        await pyodideInstance.loadPackage("micropip");
-        const micropip = pyodideInstance.pyimport("micropip");
-        await micropip.install("pypdf");
-        
-        initMsg.innerHTML = "<strong>🤖 BIOBUZZ System Status:</strong> Downloading and indexing the 2026-2027 Competition Manual directly to memory space...";
-
-        // 3. Download the PDF and build the custom keyword extraction loop inside Pyodide context
-        await pyodideInstance.runPythonAsync(`
-import urllib.request
-import os
-from pypdf import PdfReader
-
-# Download manual document to WebAssembly virtual filesystem memory file
-url = "https://firstinspires.org"
-pdf_path = "manual.pdf"
-
-req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-with urllib.request.urlopen(req) as response, open(pdf_path, 'wb') as out_file:
-    out_file.write(response.read())
-
-pages_text = []
-reader = PdfReader(pdf_path)
-for idx, page in enumerate(reader.pages):
-    text = page.extract_text() or ""
-    pages_text.append(f"--- MANUAL PAGE {idx + 1} ---\\n{text}")
-
-def search_manual(query, top_n=5):
-    query_words = [w.lower() for w in query.split() if len(w) > 3]
-    if not query_words:
-        return "\\n\\n".join(pages_text[:top_n])
-    scored_pages = []
-    for page in pages_text:
-        score = sum(1 for w in query_words if w in page.lower())
-        scored_pages.append((score, page))
-    scored_pages.sort(key=lambda x: x[0], reverse=True)
-    return "\\n\\n".join([page for score, page in scored_pages[:top_n]])
-        `);
-
-        initMsg.innerHTML = `<strong>🤖 BIOBUZZ Robot AI:</strong><br>Manual engine loaded and successfully indexed! Ask me any question about the rules, parameters, or inspection constraints.`;
-        document.getElementById('queryInput').disabled = false;
-        document.getElementById('queryInput').placeholder = "Ask a rule question...";
-        document.getElementById('sendBtn').disabled = false;
-
-      } catch (err) {
-        initMsg.innerHTML = "<strong>❌ System Crash:</strong> Initialization error. Ensure cross-origin network rules are allowed and your API connection remains unimpeded.";
-        console.error(err);
-      }
+    // Local string matching filter to locate relevant rule parameters
+    function extractContext(query) {
+      const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      if(words.length === 0) return manualContextDatabase.slice(0, 4).join("\n");
+      
+      let matches = manualContextDatabase.map(text => {
+        let score = 0;
+        words.forEach(w => { if(text.toLowerCase().includes(w)) score++; });
+        return { text, score };
+      });
+      
+      matches.sort((a, b) => b.score - a.score);
+      return matches.slice(0, 5).map(m => m.text).join("\n");
     }
 
     async function handleQuery() {
@@ -226,51 +202,16 @@ def search_manual(query, top_n=5):
       appendMessage(text, 'user');
       inputEl.value = '';
 
-      const loadNode = appendMessage('Searching local WebAssembly index and grounding response variables...', 'ai');
+      const loadNode = appendMessage('Searching manual indexes...', 'ai');
 
       try {
-        // Run python function inside browser sandbox container to fetch text context variables
-        pyodideInstance.globals.set("search_query", text);
-        const context = await pyodideInstance.runPythonAsync(`search_manual(search_query)`);
+        const structuralContext = extractContext(text);
+        const systemInstruction = "You are an expert AI specialized in the 2026-2027 FTC Competition Manual (BIOBUZZ). Provide precise rule code citations (e.g. E101, I302). Rely strictly on the context provided.";
 
-        const systemInstruction = `You are an expert AI Assistant specialized in the 2026-2027 FIRST Tech Challenge (FTC) Competition Manual (BIOBUZZ presented by RTX). Provide precise rule codes (e.g. E101, I302) or page references. Strictly adhere to the context. If not found, say you do not know.`;
-
-        // Direct fetch call safely hitting Gemini's developer API endpoint over public network pathways
-        const apiResponse = await fetch(`https://googleapis.com{userApiKey}`, {
+        // Secure, direct, client-side API call hitting the standard Google API route
+        const res = await fetch(`https://googleapis.com{userApiKey}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `MANUAL CONTEXT:\n${context}\n\nUSER QUESTION:\n${text}` }] }],
+            contents: [{ parts: [{ text: `MANUAL CONTEXT DATA:\n${structuralContext}\n\nUSER QUESTION:\n${text}` }] }],
             systemInstruction: { parts: [{ text: systemInstruction }] },
-            generationConfig: { temperature: 0.1 }
-          })
-        });
-
-        const data = await apiResponse.json();
-        
-        if (data.error) {
-          loadNode.innerText = `API Key Error: ${data.error.message}`;
-          return;
-        }
-
-        const answerText = data.candidates[0].content.parts[0].text;
-        loadNode.innerHTML = `<strong>🤖 BIOBUZZ Robot AI:</strong><br>${answerText}`;
-
-      } catch (err) {
-        loadNode.innerText = "Error completing model processing routines.";
-        console.error(err);
-      }
-    }
-
-    function appendMessage(msgText, sender) {
-      const windowEl = document.getElementById('chatWindow');
-      const div = document.createElement('div');
-      div.className = `msg ${sender}`;
-      div.innerText = msgText;
-      windowEl.appendChild(div);
-      windowEl.scrollTop = windowEl.scrollHeight;
-      return div;
-    }
-  </script>
-</body>
-</html>
