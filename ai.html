@@ -115,7 +115,7 @@
   <div id="keyModal" class="key-modal">
     <div class="modal-content">
       <h3 style="color: #ff9f43; margin-top:0; font-size: 1.6rem;">Gemini API Configuration</h3>
-      <p style="font-size:0.95rem; color:#8fb7d8; line-height: 1.4;">Enter your Gemini API key from Google AI Studio to chat securely directly inside your browser:</p>
+      <p style="font-size:0.95rem; color:#8fb7d8; line-height: 1.4;">Enter your Gemini API key from Google AI Studio to securely chat with the manual:</p>
       <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:12px; margin: 15px 0; border-radius:8px; border:1px solid rgba(92,200,255,0.3); font-size:16px; color:#fff; background: rgba(0,0,0,0.3);">
       <br>
       <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:12px 24px; font-weight:bold; border-radius:8px; cursor:pointer; font-size: 1rem;">Initialize Engine</button>
@@ -203,21 +203,10 @@
         const structuralContext = extractContext(text);
         const systemInstruction = "You are an expert AI specialized in the 2026-2027 FTC Competition Manual (BIOBUZZ). Provide precise rule code citations (e.g. E101, I302). Rely strictly on the context provided.";
 
+        // Fixed official endpoint pipeline routing directly to Google API Hub
         const urlEndpoint = `https://googleapis.com{userApiKey}`;
         const res = await fetch(urlEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: `MANUAL CONTEXT DATA:\n${structuralContext}\n\nUSER QUESTION:\n${text}` }] }],
-            systemInstruction: { parts: [{ text: systemInstruction }] },
-            generationConfig: { temperature: 0.1 }
-          })
-        });
-
-        const data = await res.json();
-
-        if (data.error) {
-          loadNode.innerText = `API Configuration Error: ${data.error.message}`;
-          return;
-        }
-
