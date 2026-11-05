@@ -18,7 +18,6 @@
       border-radius: 18px;
       overflow: hidden;
     }
-    
     .chat-window {
       flex: 1;
       padding: 20px;
@@ -27,7 +26,6 @@
       flex-direction: column;
       gap: 15px;
     }
-
     .msg {
       max-width: 80%;
       padding: 12px 16px;
@@ -36,14 +34,12 @@
       font-size: 0.95rem;
       word-wrap: break-word;
     }
-
     .msg.user {
       background-color: #ff9f43;
       color: #07111f;
       align-self: flex-end;
       border-bottom-right-radius: 2px;
     }
-
     .msg.ai {
       background: rgba(255, 255, 255, 0.08);
       color: #e8f4ff;
@@ -51,7 +47,6 @@
       border-bottom-left-radius: 2px;
       border: 1px solid rgba(232, 244, 255, 0.1);
     }
-
     .chat-input-wrapper {
       display: flex;
       padding: 15px;
@@ -59,7 +54,6 @@
       border-top: 1px solid rgba(92, 200, 255, 0.15);
       gap: 10px;
     }
-
     .chat-input-wrapper input {
       flex: 1;
       background: rgba(255, 255, 255, 0.05);
@@ -69,12 +63,6 @@
       color: #fff;
       font-size: 1rem;
     }
-
-    .chat-input-wrapper input:focus {
-      outline: none;
-      border-color: #5cc8ff;
-    }
-
     .chat-input-wrapper button {
       background: #5cc8ff;
       color: #07111f;
@@ -85,11 +73,6 @@
       cursor: pointer;
       font-size: 1rem;
     }
-
-    .chat-input-wrapper button:hover {
-      background: #3cb8f5;
-    }
-
     .key-modal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -114,17 +97,17 @@
 
   <div id="keyModal" class="key-modal">
     <div class="modal-content">
-      <h3 style="color: #ff9f43; margin-top:0; font-size: 1.6rem;">Gemini API Configuration</h3>
-      <p style="font-size:0.95rem; color:#8fb7d8; line-height: 1.4;">Enter your Gemini API key from Google AI Studio to securely chat with the manual:</p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:12px; margin: 15px 0; border-radius:8px; border:1px solid rgba(92,200,255,0.3); font-size:16px; color:#fff; background: rgba(0,0,0,0.3);">
+      <h3 style="color: #ff9f43; margin-top:0;">Gemini API Configuration</h3>
+      <p style="font-size:0.95rem; color:#8fb7d8;">Enter your private API key from Google AI Studio to run the chat engine:</p>
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:12px; margin: 15px 0; border-radius:8px; border:1px solid rgba(92,200,255,0.3); color:#fff; background: rgba(0,0,0,0.3);">
       <br>
-      <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:12px 24px; font-weight:bold; border-radius:8px; cursor:pointer; font-size: 1rem;">Initialize Engine</button>
+      <button onclick="saveApiKey()">Initialize Engine</button>
     </div>
   </div>
 
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Static Reference AI</span>
+    <span class="season">BIOBUZZ™ AI Assistant</span>
   </header>
   
   <main>
@@ -135,9 +118,8 @@
           Rule Engine online! Ask me anything about the 2026-2027 Competition rules, safety margins, points, or inspection criteria.
         </div>
       </div>
-
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Enter API Key first..." disabled onkeypress="if(event.key === 'Enter') handleQuery()">
+        <input type="text" id="queryInput" placeholder="Enter API Key first..." disabled onkeypress="if(event.key==='Enter') handleQuery()">
         <button id="sendBtn" onclick="handleQuery()" disabled>Send</button>
       </div>
     </section>
@@ -145,25 +127,6 @@
 
   <script>
     let userApiKey = "";
-
-    const manualContextDatabase = [
-      "Rule I101: Teams must be registered with FIRST and be 'competition ready' to earn points or judged awards. North America requires full team dashboard rosters, paid annual registration fee, and 2 YPP screened adult leads.",
-      "Rule I102: Check-in at the event on time. An adult team member must check-in at Pit Administration no later than 45 minutes before Qualification MATCHES are scheduled to start. At least one STUDENT must be present at the venue during check-in.",
-      "Rule I103: A responsible adult must be present for the whole event. At least 1, preferably 2, adult(s) responsible for the STUDENT team members must be present at all times.",
-      "Rule I301: Bring the complete ROBOT and supporting equipment to inspection. Teams should present the ROBOT and OPERATOR CONSOLE with all COMPONENTS, including decorative parts.",
-      "Rule I302: Total electronics configurations limits apply to all mechanisms and base chassis layout, whether they are running mounted on the robot at the same time or not.",
-      "Rule I303: Request re-inspection for most changes to the ROBOT. Re-inspection is NOT necessary for: A. Fasteners (cable ties, tape, rivets), B. Markings or labeling, C. Team SIGN configurations, D. Code revisions, E. Identical replacement components, F. Identical replacement mechanisms, G. Subsets of inspected mechanisms.",
-      "Rule E101: Personal safety comes first. Mandatory safety practices include: A. Safety glasses worn in specified areas (10-minute morning arrival grace window), B. Closed-toed/heeled shoes, C. Tie back long hair and dangling decorations (lanyards, spirit wear), D. Walk in the venue, E. Comply with health/safety codes.",
-      "Rule E102: Be Respectful. Uncivil behavior is prohibited. Examples of text infractions: 'weaponizing Gracious Professionalism' by calling out others, blocking viewing rows for extended periods, or insulting teammates.",
-      "Rule E103: Children under 12 must be accompanied in the pits by an adult at all times.",
-      "Rule E104: Respect the venue. No damage to bleachers, floors, walls. No littering with giveaways, candies, flyers, or stickers.",
-      "Rule E108: Prohibited items at events: Skateboards, hoverboards, drones, bottled gas tanks (helium), noisy devices/noisemakers (floor stompers, whistles, air horns), and scooters.",
-      "Rule E301: No custom wireless communication. Teams may not set up their own Wi-Fi networks, access points, mobile hotspots, or custom 2.4GHz / 5GHz wireless channels in the venue.",
-      "Rule E504: Open flames and spark-emitting devices are limited and tightly controlled. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters to melt strings are allowed.",
-      "Rule E505: Only small benchtop machinery easily lifted by one person is permitted in team pits (3D printers, small band saws, small drill presses, desktop CNC mills). Floor-standing power tools are prohibited.",
-      "Rule E506 & E507: Brazing and welding are completely prohibited. Soldering is allowed using an electric iron or gun only.",
-      "Section 4.1 & Table 4-1 Point Allocations: Inspire Award 1st Place = 60 points, 2nd Place = 30 points, 3rd Place = 15 points. Other Judged Awards: 1st Place = 12 points, 2nd Place = 6 points, 3rd Place = 3 points. Playoff Advancement Winners get 40 points, Finalists get 20 points."
-    ];
 
     function saveApiKey() {
       const key = document.getElementById('apiKeyInput').value.trim();
@@ -175,20 +138,6 @@
       document.getElementById('sendBtn').disabled = false;
     }
 
-    function extractContext(query) {
-      const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-      if(words.length === 0) return manualContextDatabase.slice(0, 4).join("\n");
-      
-      let matches = manualContextDatabase.map(text => {
-        let score = 0;
-        words.forEach(w => { if(text.toLowerCase().includes(w)) score++; });
-        return { text, score };
-      });
-      
-      matches.sort((a, b) => b.score - a.score);
-      return matches.slice(0, 5).map(m => m.text).join("\n");
-    }
-
     async function handleQuery() {
       const inputEl = document.getElementById('queryInput');
       const text = inputEl.value.trim();
@@ -196,17 +145,46 @@
 
       appendMessage(text, 'user');
       inputEl.value = '';
-
-      const loadNode = appendMessage('Searching manual indexes...', 'ai');
+      const loadNode = appendMessage('Consulting manual rules...', 'ai');
 
       try {
-        const structuralContext = extractContext(text);
-        const systemInstruction = "You are an expert AI specialized in the 2026-2027 FTC Competition Manual (BIOBUZZ). Provide precise rule code citations (e.g. E101, I302). Rely strictly on the context provided.";
+        const sysInst = "You are an expert AI specialized in the 2026-2027 FTC Game Manual (BIOBUZZ presented by RTX). Answer questions about rules accurately using standard rule codes (like E101, I102, G, R). If unsure, say so.";
+        const apiTarget = "https://googleapis.com" + userApiKey;
 
-        // Fixed official endpoint pipeline routing directly to Google API Hub
-        const urlEndpoint = `https://googleapis.com{userApiKey}`;
-        const res = await fetch(urlEndpoint, {
+        const response = await fetch(apiTarget, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            contents: [{ parts: [{ text: `MANUAL CONTEXT DATA:\n${structuralContext}\n\nUSER QUESTION:\n${text}` }] }],
+            contents: [{ parts: [{ text: text }] }],
+            systemInstruction: { parts: [{ text: sysInst }] },
+            generationConfig: { temperature: 0.2 }
+          })
+        });
+
+        const data = await response.json();
+        if (data.error) {
+          loadNode.innerText = "API Error: " + data.error.message;
+          return;
+        }
+
+        let answer = data.candidates[0].content.parts[0].text;
+        answer = answer.replace(/\n/g, '<br>');
+        loadNode.innerHTML = "<strong>🤖 BIOBUZZ Robot AI:</strong><br>" + answer;
+      } catch (err) {
+        loadNode.innerText = "Network transmission error. Check your key connection.";
+        console.error(err);
+      }
+    }
+
+    function appendMessage(msgText, sender) {
+      const windowEl = document.getElementById('chatWindow');
+      const div = document.createElement('div');
+      div.className = "msg " + sender;
+      div.innerText = msgText;
+      windowEl.appendChild(div);
+      windowEl.scrollTop = windowEl.scrollHeight;
+      return div;
+    }
+  </script>
+</body>
+</html>
