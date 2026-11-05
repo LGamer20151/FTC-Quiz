@@ -78,39 +78,54 @@
 <body>
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Static Rule Matcher</span>
+    <span class="season">BIOBUZZ™ Live AI Reference</span>
   </header>
+  
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
-          <strong>🤖 BIOBUZZ Rule Matcher:</strong><br>
-          Hello! Search any keywords or rules to instantly fetch matching manual entries.
+          <strong>🤖 BIOBUZZ Robot AI:</strong><br>
+          Hello! Ask me any question about the 2026-2027 Game Manual rules, constraints, or timelines.
         </div>
       </div>
+
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Type a rule number or keywords..." onkeypress="if(event.key === 'Enter') handleQuery()">
-        <button onclick="handleQuery()">Search</button>
+        <input type="text" id="queryInput" placeholder="Ask a manual question..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <button onclick="handleQuery()">Send</button>
       </div>
     </section>
   </main>
+
   <script>
-    const manualDatabase = []; // Populated with local FTC game manual rule definitions
-    function handleQuery() {
+    // CRITICAL: Replace this with your backend url once deployed to Render or Vercel
+    const BACKEND_URL = "https://onrender.com";
+
+    async function handleQuery() {
       const inputEl = document.getElementById('queryInput');
       const text = inputEl.value.trim();
       if (!text) return;
+
       appendMessage(text, 'user');
       inputEl.value = '';
-      let results = manualDatabase.filter(entry => 
-        entry.code.toLowerCase().includes(text.toLowerCase()) || 
-        entry.rule.toLowerCase().includes(text.toLowerCase())
-      );
-      let aiResponseText = results.length > 0 
-        ? `I found ${results.length} matching manual entries:<br><br>` + results.map(e => `<strong>[${e.code}]</strong> ${e.rule}`).join("<br><br>")
-        : "I couldn't find an exact match for that query in the manual database.";
-      setTimeout(() => appendMessage(aiResponseText, 'ai'), 300);
+      const loadNode = appendMessage('Analyzing manual database...', 'ai');
+
+      try {
+        const res = await fetch(BACKEND_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: text })
+        });
+        
+        const data = await res.json();
+        let formattedAnswer = data.answer.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        loadNode.innerHTML = `<strong>🤖 BIOBUZZ Robot AI:</strong><br>${formattedAnswer}`;
+      } catch (err) {
+        loadNode.innerText = "Could not reach the web server. Make sure your cloud backend is active.";
+        console.error(err);
+      }
     }
+
     function appendMessage(msgText, sender) {
       const windowEl = document.getElementById('chatWindow');
       const div = document.createElement('div');
@@ -118,6 +133,7 @@
       div.innerHTML = msgText;
       windowEl.appendChild(div);
       windowEl.scrollTop = windowEl.scrollHeight;
+      return div;
     }
   </script>
 </body>
