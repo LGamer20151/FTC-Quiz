@@ -1,167 +1,276 @@
-# app.py
-import os
-import numpy as np
-from flask import Flask, request, jsonify
-from pypdf import PdfReader
-from openai import OpenAI
-
-PDF_PATH = "Competition_Manual.pdf"
-CHUNK_WORDS = 1000
-TOP_K = 5
-EMBED_MODEL = "text-embedding-3-small"
-CHAT_MODEL = "gpt-4o-mini"
-
-client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-app = Flask(__name__)
-
-
-# ---------- Manual indexing ----------
-
-def load_text(pdf_path: str) -> str:
-    reader = PdfReader(pdf_path)
-    return "\n".join(page.extract_text() or "" for page in reader.pages)
-
-
-def chunk_text(text: str, size: int = CHUNK_WORDS) -> list[str]:
-    words = text.split()
-    return [" ".join(words[i:i + size]) for i in range(0, len(words), size)]
-
-
-def embed(texts: list[str]) -> np.ndarray:
-    resp = client.embeddings.create(model=EMBED_MODEL, input=texts)
-    return np.array([d.embedding for d in resp.data])
-
-
-def build_index(pdf_path: str = PDF_PATH):
-    chunks = chunk_text(load_text(pdf_path))
-    vectors = embed(chunks)
-    vectors = vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
-    return chunks, vectors
-
-
-# Build the index once when the server starts
-CHUNKS, VECTORS = build_index(PDF_PATH)
-
-
-# ---------- Answering ----------
-
-def answer(question: str) -> str:
-    q = embed([question])[0]
-    q = q / np.linalg.norm(q)
-    top = np.argsort(VECTORS @ q)[::-1][:TOP_K]
-    context = "\n\n---\n\n".join(CHUNKS[i] for i in top)
-
-    resp = client.chat.completions.create(
-        model=CHAT_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You answer questions about the FIRST Tech Challenge Competition Manual. "
-                    "Use only the provided context. If the answer is not in the context, say so "
-                    "and suggest which manual section to check."
-                ),
-            },
-            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
-        ],
-    )
-    return resp.choices[0].message.content
-
-
-# ---------- Web page ----------
-
-HTML_PAGE = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FTC Manual Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <title>FTC Game Manual AI</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Load Pyodide for Browser-Side Python Processing -->
+  <script src="https://jsdelivr.net"></script>
+
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 20px; }
-    .container { max-width: 760px; margin: 40px auto; background: #fff; padding: 24px;
-                 border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    h1 { margin-top: 0; font-size: 1.6rem; }
-    p.sub { color: #555; margin-top: 0; }
-    form { display: flex; gap: 8px; margin-bottom: 20px; }
-    input[type=text] { flex: 1; padding: 10px; font-size: 1rem;
-                       border: 1px solid #ccc; border-radius: 6px; }
-    button { padding: 10px 18px; font-size: 1rem; background: #1f6feb; color: #fff;
-             border: none; border-radius: 6px; cursor: pointer; }
-    button:disabled { background: #8ab4f8; cursor: not-allowed; }
-    #answer { white-space: pre-wrap; line-height: 1.5; min-height: 40px; }
-    .error { color: #b00020; }
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 140px);
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(92, 200, 255, 0.15);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    
+    .chat-window {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .msg {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      line-height: 1.5;
+      font-size: 0.95rem;
+      word-wrap: break-word;
+    }
+
+    .msg.user {
+      background-color: #ff9f43;
+      color: #07111f;
+      align-self: flex-end;
+      border-bottom-right-radius: 2px;
+    }
+
+    .msg.ai {
+      background: rgba(255, 255, 255, 0.08);
+      color: #e8f4ff;
+      align-self: flex-start;
+      border-bottom-left-radius: 2px;
+      border: 1px solid rgba(232, 244, 255, 0.1);
+    }
+
+    .chat-input-wrapper {
+      display: flex;
+      padding: 15px;
+      background: rgba(7, 17, 31, 0.95);
+      border-top: 1px solid rgba(92, 200, 255, 0.15);
+      gap: 10px;
+    }
+
+    .chat-input-wrapper input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(232, 244, 255, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .chat-input-wrapper input:focus {
+      outline: none;
+      border-color: #5cc8ff;
+    }
+
+    .chat-input-wrapper button {
+      background: #5cc8ff;
+      color: #07111f;
+      border: none;
+      padding: 0 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .chat-input-wrapper button:hover {
+      background: #3cb8f5;
+    }
+
+    /* Modal for Key input */
+    .key-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(7, 17, 31, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 16px;
+      border: 1px solid rgba(92, 200, 255, 0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>FTC Competition Manual Assistant</h1>
-    <p class="sub">Ask a question about the 2026-2027 FIRST Tech Challenge Competition Manual.</p>
 
-    <form id="askForm">
-      <input type="text" id="question" placeholder="For example: What are the robot size limits?" required>
-      <button type="submit" id="askBtn">Ask</button>
-    </form>
-
-    <div id="answer"></div>
+  <!-- API Key Setup Modal Overlay -->
+  <div id="keyModal" class="key-modal">
+    <div class="modal-content">
+      <h3 style="color: #ff9f43; margin-top:0;">Gemini API Configuration</h3>
+      <p style="font-size:0.9rem; color:#8fb7d8;">To process client-side manual searches, enter a Gemini API Key from Google AI Studio:</p>
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:10px; margin: 15px 0; border-radius:6px; border:1px solid #ccc; font-size:16px;">
+      <br>
+      <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:10px 20px; font-weight:bold; border-radius:6px; cursor:pointer;">Initialize Engine</button>
+    </div>
   </div>
 
+  <header class="topbar">
+    <a class="brand" href="index.html">← Back to Dashboard</a>
+    <span class="season">BIOBUZZ™ Client-Side AI</span>
+  </header>
+  
+  <main>
+    <section class="chat-card">
+      <div class="chat-window" id="chatWindow">
+        <div class="msg ai" id="initMessage">
+          <strong>🤖 BIOBUZZ System Status:</strong> Waiting for Python environment and WebAssembly compiler initialization...
+        </div>
+      </div>
+
+      <div class="chat-input-wrapper">
+        <input type="text" id="queryInput" placeholder="Loading manual database..." disabled onkeypress="if(event.key === 'Enter') handleQuery()">
+        <button id="sendBtn" onclick="handleQuery()" disabled>Send</button>
+      </div>
+    </section>
+  </main>
+
   <script>
-    const form = document.getElementById("askForm");
-    const input = document.getElementById("question");
-    const btn = document.getElementById("askBtn");
-    const answerBox = document.getElementById("answer");
+    let pyodideInstance = null;
+    let userApiKey = "";
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const question = input.value.trim();
-      if (!question) return;
+    async function saveApiKey() {
+      const key = document.getElementById('apiKeyInput').value.trim();
+      if(!key) { alert("Please provide a valid key."); return; }
+      userApiKey = key;
+      document.getElementById('keyModal').style.display = 'none';
+      initEngineAndManual();
+    }
 
-      btn.disabled = true;
-      answerBox.className = "";
-      answerBox.textContent = "Searching the manual...";
+    async function initEngineAndManual() {
+      const initMsg = document.getElementById('initMessage');
+      try {
+        // 1. Fire up Pyodide environment natively inside the tab
+        pyodideInstance = await loadPyodide();
+        initMsg.innerHTML = "<strong>🤖 BIOBUZZ System Status:</strong> Python environment active. Installing PDF parser dependencies...";
+        
+        // 2. Fetch micropip package manager and install pypdf
+        await pyodideInstance.loadPackage("micropip");
+        const micropip = pyodideInstance.pyimport("micropip");
+        await micropip.install("pypdf");
+        
+        initMsg.innerHTML = "<strong>🤖 BIOBUZZ System Status:</strong> Downloading and indexing the 2026-2027 Competition Manual directly to memory space...";
+
+        // 3. Download the PDF and build the custom keyword extraction loop inside Pyodide context
+        await pyodideInstance.runPythonAsync(`
+import urllib.request
+import os
+from pypdf import PdfReader
+
+# Download manual document to WebAssembly virtual filesystem memory file
+url = "https://firstinspires.org"
+pdf_path = "manual.pdf"
+
+req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+with urllib.request.urlopen(req) as response, open(pdf_path, 'wb') as out_file:
+    out_file.write(response.read())
+
+pages_text = []
+reader = PdfReader(pdf_path)
+for idx, page in enumerate(reader.pages):
+    text = page.extract_text() or ""
+    pages_text.append(f"--- MANUAL PAGE {idx + 1} ---\\n{text}")
+
+def search_manual(query, top_n=5):
+    query_words = [w.lower() for w in query.split() if len(w) > 3]
+    if not query_words:
+        return "\\n\\n".join(pages_text[:top_n])
+    scored_pages = []
+    for page in pages_text:
+        score = sum(1 for w in query_words if w in page.lower())
+        scored_pages.append((score, page))
+    scored_pages.sort(key=lambda x: x[0], reverse=True)
+    return "\\n\\n".join([page for score, page in scored_pages[:top_n]])
+        `);
+
+        initMsg.innerHTML = `<strong>🤖 BIOBUZZ Robot AI:</strong><br>Manual engine loaded and successfully indexed! Ask me any question about the rules, parameters, or inspection constraints.`;
+        document.getElementById('queryInput').disabled = false;
+        document.getElementById('queryInput').placeholder = "Ask a rule question...";
+        document.getElementById('sendBtn').disabled = false;
+
+      } catch (err) {
+        initMsg.innerHTML = "<strong>❌ System Crash:</strong> Initialization error. Ensure cross-origin network rules are allowed and your API connection remains unimpeded.";
+        console.error(err);
+      }
+    }
+
+    async function handleQuery() {
+      const inputEl = document.getElementById('queryInput');
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      appendMessage(text, 'user');
+      inputEl.value = '';
+
+      const loadNode = appendMessage('Searching local WebAssembly index and grounding response variables...', 'ai');
 
       try {
-        const res = await fetch("/ask", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question })
+        // Run python function inside browser sandbox container to fetch text context variables
+        pyodideInstance.globals.set("search_query", text);
+        const context = await pyodideInstance.runPythonAsync(`search_manual(search_query)`);
+
+        const systemInstruction = `You are an expert AI Assistant specialized in the 2026-2027 FIRST Tech Challenge (FTC) Competition Manual (BIOBUZZ presented by RTX). Provide precise rule codes (e.g. E101, I302) or page references. Strictly adhere to the context. If not found, say you do not know.`;
+
+        // Direct fetch call safely hitting Gemini's developer API endpoint over public network pathways
+        const apiResponse = await fetch(`https://googleapis.com{userApiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: `MANUAL CONTEXT:\n${context}\n\nUSER QUESTION:\n${text}` }] }],
+            systemInstruction: { parts: [{ text: systemInstruction }] },
+            generationConfig: { temperature: 0.1 }
+          })
         });
-        const data = await res.json();
-        if (!res.ok) {
-          answerBox.className = "error";
-          answerBox.textContent = data.error || "Something went wrong.";
-        } else {
-          answerBox.textContent = data.answer;
+
+        const data = await apiResponse.json();
+        
+        if (data.error) {
+          loadNode.innerText = `API Key Error: ${data.error.message}`;
+          return;
         }
+
+        const answerText = data.candidates[0].content.parts[0].text;
+        loadNode.innerHTML = `<strong>🤖 BIOBUZZ Robot AI:</strong><br>${answerText}`;
+
       } catch (err) {
-        answerBox.className = "error";
-        answerBox.textContent = "Could not reach the server.";
-      } finally {
-        btn.disabled = false;
+        loadNode.innerText = "Error completing model processing routines.";
+        console.error(err);
       }
-    });
+    }
+
+    function appendMessage(msgText, sender) {
+      const windowEl = document.getElementById('chatWindow');
+      const div = document.createElement('div');
+      div.className = `msg ${sender}`;
+      div.innerText = msgText;
+      windowEl.appendChild(div);
+      windowEl.scrollTop = windowEl.scrollHeight;
+      return div;
+    }
   </script>
 </body>
 </html>
-"""
-
-
-@app.route("/")
-def home():
-    return HTML_PAGE
-
-
-@app.route("/ask", methods=["POST"])
-def ask():
-    data = request.get_json(silent=True) or {}
-    question = (data.get("question") or "").strip()
-    if not question:
-        return jsonify({"error": "Please enter a question."}), 400
-    try:
-        return jsonify({"answer": answer(question)})
-    except Exception as e:
-        return jsonify({"error": f"Something went wrong: {e}"}), 500
-
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
