@@ -117,6 +117,10 @@
   <script>
     const automatedAnswers = [
       {
+        keywords: ["hi", "hello", "hey", "greetings", "yo"],
+        response: "🤖 <strong>Hello there!</strong> Welcome to your team's FTC BIOBUZZ knowledge engine. Ask me anything about the rules, motors, balls, sizing constraints, or timing rules, and I will pull up the exact specifications instantly!"
+      },
+      {
         keywords: ["ball", "balls", "preload", "start with", "starting element", "game piece", "pieces"],
         response: "<strong>BIOBUZZ Match Setup Criteria (Section 9.8):</strong><br>• Each robot can preload with a maximum of <strong>1 Scoring Element (pollen ball)</strong>.<br>• Initial field inventory elements consist of exactly <strong>40 neutral Pollen spheres</strong> (2.8 inches across) and <strong>16 alliance-colored Nectar spheres</strong> (3.6 inches across, heavier than pollen).<br>• Robots are permitted to hold/control a maximum configuration of up to <strong>4 game pieces simultaneously</strong> in any combination!"
       },
@@ -194,8 +198,3 @@
     }
 
     function appendMessage(msgText, sender) {
-      const windowEl = document.getElementById('chatWindow');
-      const div = document.createElement('div');
-      div.className = `msg ${sender}`;
-      div.innerHTML = msgText;
-      windowEl.appendChild(div);
