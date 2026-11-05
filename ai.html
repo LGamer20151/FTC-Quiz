@@ -7,7 +7,7 @@
   <title>FTC Game Manual AI</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Clean layout formatting for chat window */
+    /* Responsive custom viewport styling for dark theme alignment */
     .chat-card {
       display: flex;
       flex-direction: column;
@@ -91,7 +91,7 @@
       background: #3cb8f5;
     }
 
-    /* Modal dialog configuration for secure initialization */
+    /* Modal box overlay configuration */
     .key-modal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -119,7 +119,7 @@
     <div class="modal-content">
       <h3 style="color: #ff9f43; margin-top:0;">Gemini API Configuration</h3>
       <p style="font-size:0.9rem; color:#8fb7d8;">Enter your Gemini API key from Google AI Studio to chat securely directly inside your browser:</p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:10px; margin: 15px 0; border-radius:6px; border:1px solid #ccc; font-size:16px; color:#000;">
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:10px; margin: 15px 0; border-radius:6px; border:1px solid #ccc; font-size:16px; color:#000; background:#fff;">
       <br>
       <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:10px 20px; font-weight:bold; border-radius:6px; cursor:pointer;">Initialize Engine</button>
     </div>
@@ -149,7 +149,7 @@
   <script>
     let userApiKey = "";
 
-    // Embedded Game Manual Data Archive for zero-latency browser matching
+    // Embedded Game Manual Data Archive for local filtering loops
     const manualContextDatabase = [
       "Rule I101: Teams must be registered with FIRST and be 'competition ready' to earn points or judged awards. North America requires full team dashboard rosters, paid annual registration fee, and 2 YPP screened adult leads.",
       "Rule I102: Check-in at the event on time. An adult team member must check-in at Pit Administration no later than 45 minutes before Qualification MATCHES are scheduled to start. At least one STUDENT must be present at the venue during check-in.",
@@ -179,7 +179,7 @@
       document.getElementById('sendBtn').disabled = false;
     }
 
-    // Local string matching filter to locate relevant rule parameters
+    // Local filter array routine
     function extractContext(query) {
       const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
       if(words.length === 0) return manualContextDatabase.slice(0, 4).join("\n");
@@ -208,8 +208,9 @@
         const structuralContext = extractContext(text);
         const systemInstruction = "You are an expert AI specialized in the 2026-2027 FTC Competition Manual (BIOBUZZ). Provide precise rule code citations (e.g. E101, I302). Rely strictly on the context provided.";
 
-        // Secure, direct, client-side API call hitting the standard Google API route
-        const res = await fetch(`https://googleapis.com{userApiKey}`, {
+        // Direct standard network pipeline to API parsing hub
+        const urlEndpoint = `https://googleapis.com{userApiKey}`;
+        const res = await fetch(urlEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
