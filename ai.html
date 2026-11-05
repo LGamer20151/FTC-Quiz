@@ -103,12 +103,12 @@
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
           <strong>🤖 Master BIOBUZZ Database AI:</strong><br>
-          I now contain the complete operating knowledge of the 2026-2027 season! Ask me about elements, sizing constraints, mechanical limits, flowers, hives, scores, or safety protocols i have the answers.
+          I now contain the complete operating knowledge of the 2026-2027 season! Say hi or ask me about sizing, motors, game pieces, flowers, hives, or checkpoints.
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Ask any question (e.g., 'how many motors are allowed', 'game pieces')..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <input type="text" id="queryInput" placeholder="Ask any question (e.g., 'hi', 'how many motors are allowed')..." onkeypress="if(event.key === 'Enter') handleQuery()">
         <button onclick="handleQuery()">Ask</button>
       </div>
     </section>
@@ -117,7 +117,7 @@
   <script>
     const automatedAnswers = [
       {
-        keywords: ["hi", "hello", "hey", "greetings", "yo"],
+        keywords: ["hi", "hello", "hey", "yo", "greetings"],
         response: "🤖 <strong>Hello there!</strong> Welcome to your team's FTC BIOBUZZ knowledge engine. Ask me anything about the rules, motors, balls, sizing constraints, or timing rules, and I will pull up the exact specifications instantly!"
       },
       {
@@ -130,7 +130,7 @@
       },
       {
         keywords: ["size", "sizing", "cube", "expand", "dimension", "inches"],
-        response: "<strong>Robot Sizing Constraints:</strong> At the immediate start of a match, the robot must fit completely inside a standard <strong>18-inch sizing cube</strong>. After the match begins and the initialization initialization scripts run, the robot can dynamically expand up to maximum operational bounds of <strong>18 x 24 x 29 inches</strong>."
+        response: "<strong>Robot Sizing Constraints:</strong> At the immediate start of a match, the robot must fit completely inside a standard <strong>18-inch sizing cube</strong>. After the match begins and the initialization scripts run, the robot can dynamically expand up to maximum operational bounds of <strong>18 x 24 x 29 inches</strong>."
       },
       {
         keywords: ["hive", "hives", "tip", "tipping", "seesaw"],
@@ -189,7 +189,7 @@
       }
 
       if (!foundResponse) {
-        foundResponse = "I couldn't find a direct record for that phrase in my seasonal rule database tree. Try querying terms like <strong>'size'</strong>, <strong>'motors'</strong>, <strong>'hive'</strong>, <strong>'flowers'</strong>, <strong>'balls'</strong>, or <strong>'safety glasses'</strong>!";
+        foundResponse = "I couldn't find a direct record for that phrase in my seasonal rule database tree. Try querying terms like <strong>'hi'</strong>, <strong>'size'</strong>, <strong>'motors'</strong>, <strong>'hive'</strong>, <strong>'flowers'</strong>, <strong>'balls'</strong>, or <strong>'safety glasses'</strong>!";
       }
 
       setTimeout(() => {
@@ -198,3 +198,4 @@
     }
 
     function appendMessage(msgText, sender) {
+      const windowEl = document.getElementById('chatWindow');
