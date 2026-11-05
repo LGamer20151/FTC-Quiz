@@ -5,8 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#07111f">
   <title>FTC Master Reference Engine</title>
-  <link rel="stylesheet" href="style.css">
   <style>
+    /* Global Styles */
+    body {
+      background-color: #07111f;
+      color: #e8f4ff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .topbar {
+      background: rgba(7, 17, 31, 0.85);
+      border-bottom: 1px solid rgba(92, 200, 255, 0.15);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+    .brand {
+      color: #5cc8ff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .brand:hover { text-decoration: underline; }
+    .season {
+      font-size: 0.9rem;
+      color: rgba(232, 244, 255, 0.6);
+    }
+
+    /* Layout Configurations */
     .chat-card {
       display: flex;
       flex-direction: column;
@@ -79,6 +107,8 @@
       font-size: 1rem;
     }
     .chat-input-wrapper button:hover { background: #3cb8f5; }
+    
+    /* Result Markup Formatting */
     .section-tag {
       font-size: 0.75rem;
       text-transform: uppercase;
@@ -120,6 +150,7 @@
   </main>
 
   <script>
+    // System Data Matrix Setup
     const comprehensiveMatrix = [
       {
         pageRange: "1-18",
@@ -143,16 +174,31 @@
         pageRange: "25-30",
         section: "4.0 Tournament Advancement & Point Math",
         keys: ["4.1", "4.2", "table 4-1", "table 4-2", "advancement", "points", "ranking", "tiebreaker", "sorting", "inspire award", "playoff", "alliance", "slots"],
-        text: "<span class='section-tag'>Pages 25-30 • Section 4</span><div class='rule-title'>Advancement Calculations & Sorting Matrix</div>• <strong>Regional Progression (4.0):</strong> Teams can only advance from events located within their declared HOME REGION.<br>• <strong>Table 4-1 (Advancement Point Values):</strong><br>&nbsp;&nbsp;- <strong>Inspire Award:</strong> 1st = 60 pts, 2nd = 30 pts, 3rd = 15 pts.<br>&nbsp;&nbsp;- <strong>Other Judged Awards (1st):</strong> 12 pts (2nd = 6 pts, 3rd = 3 pts).<br>&nbsp;&nbsp;- <strong>Playoff Phase:</strong> 1st (Winners) = 40 pts, 2nd (Finalists) = 20 pts, 3rd = 10 pts, 4th = 5 pts.<br>&nbsp;&nbsp;- <strong>Alliance Selection:</strong> Points equal 21 minus Alliance Lead Rank or Draft Acceptance position number.<br>• <strong>Table 4-2 (Tiebreaker Order):</strong> 1st Total Advancement Points, 2nd Judged Award Points, 3rd Playoff Points, 4th Alliance Selection Points, 5th Qual Performance Points, 6th Average Qual Points (no fouls), 7th Average Auto Points."
-      },
-      {
-        pageRange: "31-34",
-        section: "5.1 General Event Safety & Behavior Standards",
-        keys: ["5.1", "e101", "e102", "e103", "e104", "e105", "e106", "e107", "safety glasses", "shoes", "conduct", "un-gp", "fabrication"],
-        text: "<span class='section-tag'>Pages 31-34 • Section 5.1</span><div class='rule-title'>General Event Regulations (E)</div>• <strong>Violation Warning Note:</strong> Standard breach of any Section 5 rule results in an immediate <strong>VERBAL WARNING</strong>. Egregious infractions trigger disqualification.<br>• <strong>Rule E101 (Safety Gear):</strong> Wear side-shield ANSI-approved safety glasses (10-minute daily morning arrival grace period). Closed-toed shoes are mandatory. Tie back long hair and lanyards.<br>• <strong>Rule E102 (Behavior):</strong> Incivility is strictly prohibited. Banned acts include 'weaponizing Gracious Professionalism' (publicly tracking/accusing others of being 'Not GP'), yelling in anger, or obstructing spectator views.<br>• <strong>Rule E107 (Work Zones):</strong> Fabrication must happen only inside designated pit spaces or event machine shops."
-      },
-      {
-        pageRange: "33-35",
-        section: "5.1 & 5.3 Banned Items & Venue Wireless Parameters",
-        keys: ["e108", "e109", "e110", "e111", "e112", "e113", "e114", "e301", "e302", "banned", "weapons", "helium", "wifi", "hotspot", "bluetooth", "banner"],
-        text: "<span class='section-tag'>Pages 33-35 • Section 5.1 & 5.3</span><div class='rule-title'>Banned items</div>• <strong>Banned Items Note:</strong> Here is some banned items open flames and sparks,Over 8 motors and 10 servos,Unapproved Power Sources."
+        text: "<span class='section-tag'>Pages 25-30 • Section 4</span><div class='rule-title'>Advancement Calculations & Sorting Matrix</div>• <strong>Regional Progression (4.0):</strong> Teams can only advance from events located within their declared HOME REGION.<br>• <strong>Table 4-1 (Advancement Point Values):</strong><br>&nbsp;&nbsp;- <strong>Inspire Award:</strong> 1st = 60 pts, 2nd = 30 pts, 3rd = 15 pts.<br>&nbsp;&nbsp;- <strong>Other Judged Awards (1st):</strong> 12 pts (2nd = 6 pts, 3rd = 3 pts).<br>&nbsp;&nbsp;- <strong>Playoff Phase:</strong> 1st (Winners) = 40 pts, 2nd (Finalists) = 20 pts, 3rd = 10 pts, 4th = 5 pts.<br>&nbsp;&nbsp;- <strong>Alliance Selection:</strong> Points equal 21 minus Alliance Lead Rank or Draft Acceptance position number.<br>• <strong>Table 4-2 (Tiebreaker Order):</strong> 1st Total Ranking Points, 2nd Highest Single Match Score, 3rd Highest Individual Match Tiebreaker Point Metrics, 4th Random Electronic Draw."
+      }
+    ];
+
+    // Engine Core Search Controller
+    function handleQuery() {
+      const inputEl = document.getElementById('queryInput');
+      const chatWindow = document.getElementById('chatWindow');
+      const query = inputEl.value.trim().toLowerCase();
+      
+      if (!query) return;
+
+      // 1. Append User Input Bubble
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg user';
+      userMsg.textContent = inputEl.value;
+      chatWindow.appendChild(userMsg);
+      
+      // Clean input target out
+      inputEl.value = '';
+
+      // 2. Scan and Build Output
+      let matchedContent = "";
+      comprehensiveMatrix.forEach(item => {
+        const matchesKey = item.keys.some(key => query.includes(key) || key.includes(query));
+        const matchesSection = item.section.toLowerCase().includes(query);
+        
+        if (matchesKey || matchesSection) {
