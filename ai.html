@@ -1,194 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIOBUZZ AI - FTC Manual Assistant</title>
-<style>
-  :root{--bg:#0d1117;--panel:#161b22;--accent:#f5a623;--accent2:#2f81f7;--text:#e6edf3;--muted:#8b949e;--border:#30363d;}
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
-  header{background:linear-gradient(135deg,#161b22,#1f2937);border-bottom:2px solid var(--accent);padding:28px 20px;text-align:center;}
-  header h1{font-size:2rem;letter-spacing:1px;}
-  header h1 span{color:var(--accent);}
-  header p{color:var(--muted);margin-top:6px;font-size:.95rem;}
-  .badge{display:inline-block;background:var(--accent2);color:#fff;font-size:.75rem;padding:3px 10px;border-radius:12px;margin-top:10px;letter-spacing:.5px;}
-  .container{max-width:1000px;margin:0 auto;padding:24px 20px 80px;}
-  section{margin-top:36px;}
-  section h2{font-size:1.3rem;border-left:4px solid var(--accent);padding-left:12px;margin-bottom:14px;}
-  .chat-box{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
-  #chat-log{height:440px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
-  .msg{padding:10px 14px;border-radius:10px;max-width:90%;font-size:.9rem;white-space:pre-wrap;}
-  .msg.user{align-self:flex-end;background:var(--accent2);color:#fff;}
-  .msg.bot{align-self:flex-start;background:#21262d;border:1px solid var(--border);}
-  .msg.bot b{color:var(--accent);}
-  .chat-input{display:flex;border-top:1px solid var(--border);}
-  .chat-input input{flex:1;background:transparent;border:none;outline:none;color:var(--text);padding:14px 16px;font-size:.92rem;}
-  .chat-input button{background:var(--accent);border:none;color:#111;font-weight:700;padding:0 22px;cursor:pointer;font-size:.9rem;}
-  .chat-input button:hover{background:#ffbe4d;}
-  .status{font-size:.78rem;color:var(--muted);padding:6px 16px;border-top:1px solid var(--border);}
-  footer{text-align:center;color:var(--muted);font-size:.78rem;padding:24px;border-top:1px solid var(--border);}
-</style>
-</head>
-<body>
+# app.py
+import os
+import numpy as np
+from pypdf import PdfReader
+from openai import OpenAI
 
-<header>
-  <h1>BIOBUZZ <span>AI</span></h1>
-  <p>2026-2027 FIRST Tech Challenge Manual Assistant</p>
-  <div class="badge">Manual vTU07 - Pages 1-171</div>
-</header>
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+CHUNK_SIZE = 1000
+TOP_K = 5
 
-<div class="container">
-  <section>
-    <h2>Ask the BIOBUZZ AI</h2>
-    <div class="chat-box">
-      <div id="chat-log">
-        <div class="msg bot">Welcome! Ask me anything about the 2026-2027 BIOBUZZ manual - robot rules, scoring, penalties, awards, field setup, tournament structure, or a specific rule like G14 or R5.</div>
-      </div>
-      <div class="chat-input">
-        <input id="user-input" type="text" placeholder="Ask anything from the manual..." onkeydown="if(event.key==='Enter')sendMessage()">
-        <button onclick="sendMessage()">Send</button>
-      </div>
-      <div class="status" id="status">Initializing...</div>
-    </div>
-  </section>
-</div>
+def load_text(pdf_path: str) -> str:
+    reader = PdfReader(pdf_path)
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
 
-<footer>
-  Unofficial assistant based on the FIRST Tech Challenge 2026-2027 Competition Manual (TU07), pages 1-171.
-</footer>
+def chunk_text(text: str, size: int = CHUNK_SIZE) -> list[str]:
+    words = text.split()
+    return [" ".join(words[i:i + size]) for i in range(0, len(words), size)]
 
-<script>
-/* ============================================================
-   STEP 1: PASTE THE GENERATED LINE FROM build_manual.html HERE.
-   Replace the empty backticks below with the line it gives you.
-   ============================================================ */
-const EMBEDDED_MANUAL = ``;
+def embed(texts: list[str]) -> np.ndarray:
+    resp = client.embeddings.create(model="text-embedding-3-small", input=texts)
+    return np.array([d.embedding for d in resp.data])
 
-/* ============================================================
-   BUILT-IN FALLBACK INDEX (used until you paste the manual)
-   ============================================================ */
-const builtInIndex = [
-  {page:1,  text:"The 2026-2027 FIRST Tech Challenge game is BIOBUZZ Presented by RTX. This manual governs the ARENA, game rules, robot construction, and tournament structure."},
-  {page:3,  text:"Gracious Professionalism is the core value of FIRST. Teams compete hard but treat everyone with respect."},
-  {page:5,  text:"The Competition Integrity Contract (CIC) requires honesty, fair play, and adherence to the rules. Violations can lead to disqualification."},
-  {page:7,  text:"The season begins with Kickoff in September. League and qualifying events run through March. Capstone events and Championship occur April through July."},
-  {page:9,  text:"Rules are numbered by letter: E for event, A for awards, G for game, R for robot, T for tournament."},
-  {page:20, text:"Judged awards include Inspire, Think, Connect, Innovate, Design, Motivate, and Control. Alliance awards include Winning and Finalist. Individual awards include Dean's List and Compass."},
-  {page:30, text:"Event rules cover wireless and network use, pit rules, robot carts, safety, load-in and load-out, ceremonies, and team conduct."},
-  {page:45, text:"The ARENA includes the FIELD, driver stations, and surrounding area. The HIVE Structure is a central field element where SCORING ELEMENTS are placed."},
-  {page:50, text:"The FLOWER is a scoring-related field element. SCORING ELEMENTS are the game pieces robots manipulate during the MATCH."},
-  {page:55, text:"AprilTags are fiducial markers placed on the field for robot vision and localization."},
-  {page:70, text:"A MATCH has a Pre-MATCH setup, an Autonomous Period, a Driver-Controlled Period, and an End Game."},
-  {page:90, text:"Robot rules govern design, fabrication, motors, actuators, power distribution, control systems, sensors, pneumatics, and the OPERATOR CONSOLE."},
-  {page:110,text:"Pneumatic systems and airflow devices are governed by the ROBOT Construction Rules."},
-  {page:130,text:"Tournament rules cover Qualification MATCHES, Playoff MATCHES, Dual Division play, League Play, and the FIRST Championship."},
-  {page:150,text:"The Head REFEREE has final authority on all scoring and penalty decisions."},
-  {page:171,text:"End of the 2026-2027 FIRST Tech Challenge Competition Manual, version TU07."}
-];
+def build_index(pdf_path: str):
+    chunks = chunk_text(load_text(pdf_path))
+    vectors = embed(chunks)
+    vectors /= np.linalg.norm(vectors, axis=1, keepdims=True)
+    return chunks, vectors
 
-/* ============================================================
-   BUILD SEARCHABLE CHUNKS
-   ============================================================ */
-let chunks = [];
-let ready = false;
+def answer(question: str, chunks, vectors) -> str:
+    q = embed([question])[0]
+    q /= np.linalg.norm(q)
+    top = np.argsort(vectors @ q)[::-1][:TOP_K]
+    context = "\n\n---\n\n".join(chunks[i] for i in top)
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system",
+             "content": "You answer questions about the FIRST Tech Challenge Competition Manual. "
+                        "Use only the provided context. If the answer is not in the context, say so "
+                        "and suggest which manual section to check."},
+            {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
+        ],
+    )
+    return resp.choices[0].message.content
 
-function buildChunks() {
-  chunks = [];
-  const raw = EMBEDDED_MANUAL.trim();
-
-  if (raw.length > 500) {
-    const clean = raw.replace(/\r/g, '');
-    if (clean.includes('\f') && clean.split('\f').length > 50) {
-      clean.split('\f').forEach((p, i) => {
-        const t = p.replace(/\s+/g, ' ').trim();
-        if (t.length > 40) chunks.push({ page: i + 1, text: t });
-      });
-    } else {
-      const flat = clean.replace(/\s+/g, ' ').trim();
-      const size = 900;
-      for (let i = 0; i < flat.length; i += size) {
-        const t = flat.slice(i, i + size);
-        const estPage = Math.min(171, Math.floor((i / flat.length) * 171) + 1);
-        if (t.length > 40) chunks.push({ page: estPage, text: t });
-      }
-    }
-  }
-
-  const usingReal = chunks.length > 0;
-  if (!usingReal) chunks = builtInIndex.slice();
-
-  ready = true;
-  document.getElementById('status').textContent = usingReal
-    ? 'Ready. ' + chunks.length + ' passages indexed from the full manual.'
-    : 'Ready. ' + chunks.length + ' built-in passages. Paste your manual text for full coverage.';
-}
-
-/* ============================================================
-   SEARCH
-   ============================================================ */
-const stopwords = new Set(['the','a','an','is','are','was','were','of','to','in','on','for','and','or','what','how','does','do','can','i','my','we','it','this','that','with','about','from','be','by','at','as','if','when','which','who','why','rule','rules']);
-
-function tokenize(s) {
-  return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 1 && !stopwords.has(w));
-}
-
-function search(query) {
-  const terms = tokenize(query);
-  if (!terms.length) return [];
-
-  const scored = chunks.map(c => {
-    const hay = c.text.toLowerCase();
-    let score = 0;
-    terms.forEach(t => {
-      const matches = hay.split(t).length - 1;
-      if (matches > 0) score += matches * (t.length > 4 ? 2 : 1);
-    });
-    return { chunk: c, score };
-  });
-
-  return scored.filter(s => s.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
-}
-
-function answer(query) {
-  const results = search(query);
-  if (!results.length) {
-    return "I couldn't find that in the indexed text. Try different keywords, or a rule number like G14, R5, or T7.";
-  }
-
-  let reply = '';
-  results.forEach((r, i) => {
-    const snippet = r.chunk.text.length > 420
-      ? r.chunk.text.slice(0, 420).trim() + '...'
-      : r.chunk.text;
-    reply += '<b>Passage ' + (i + 1) + ' (page ~' + r.chunk.page + ')</b>\n' + snippet + '\n\n';
-  });
-  reply += '<i>Based on the indexed manual text. Always confirm against the official PDF before competition.</i>';
-  return reply;
-}
-
-/* ============================================================
-   UI
-   ============================================================ */
-function addMsg(text, who) {
-  const log = document.getElementById('chat-log');
-  const div = document.createElement('div');
-  div.className = 'msg ' + who;
-  div.innerHTML = text;
-  log.appendChild(div);
-  log.scrollTop = log.scrollHeight;
-}
-
-function sendMessage() {
-  const input = document.getElementById('user-input');
-  const q = input.value.trim();
-  if (!q || !ready) return;
-  addMsg(q.replace(/</g, '&lt;'), 'user');
-  input.value = '';
-  addMsg(answer(q), 'bot');
-}
-
-buildChunks();
-</script>
-</body>
-</html>
+if __name__ == "__main__":
+    chunks, vectors = build_index("Competition_Manual.pdf")
+    print("Ask a question about the manual (type 'exit' to quit).")
+    while True:
+        q = input("> ").strip()
+        if q.lower() == "exit":
+            break
+        print(answer(q, chunks, vectors), "\n")
