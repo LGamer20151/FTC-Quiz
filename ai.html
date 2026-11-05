@@ -115,38 +115,37 @@
   </main>
 
   <script>
-    // Hardcoded Rule Database that triggers on keyword patterns or exact codes
     const automatedAnswers = [
       {
-        keywords: ["e101", "safety glasses", "shoes", "hair"],
+        keywords: ["e101", "safety glasses", "shoes", "hair", "eye protection"],
         response: "<strong>Rule E101 (Personal Safety):</strong> All team members must wear safety glasses in specified areas (with a 10-minute morning grace window). Closed-toed/heeled shoes are strictly mandatory. Long hair and dangling items (like lanyards) must be tied back while working on the robot."
       },
       {
-        keywords: ["i102", "check in", "pit admin", "late"],
+        keywords: ["i102", "check in", "pit admin", "late", "deadline"],
         response: "<strong>Rule I102 (Event Check-In):</strong> An adult team member must check-in at the Pit Administration station no later than <strong>45 minutes before</strong> Qualification Matches are scheduled to start. At least one student teammate must be physically present at the venue before check-in can be finalized."
       },
       {
-        keywords: ["i302", "electronics", "motor", "limit"],
+        keywords: ["i302", "electronics", "motor", "limit", "servo"],
         response: "<strong>Rule I302 (Configuration Limits):</strong> The total number of electronics (motors, servos, control units) used to build all mechanisms and the base robot may not exceed constraints, regardless of whether they are mounted on the robot at the same time or not."
       },
       {
-        keywords: ["i303", "reinspection", "change", "re-inspect"],
+        keywords: ["i303", "reinspection", "change", "re-inspect", "modify"],
         response: "<strong>Rule I303 (Re-inspection Rules):</strong> Most changes require re-inspection. However, it is <strong>NOT necessary</strong> for replacing identical components, modifying code, switching identical mechanisms, or editing fasteners (tape, zip ties, rivets)."
       },
       {
-        keywords: ["e301", "wi-fi", "wifi", "bluetooth", "hotspot"],
+        keywords: ["e301", "wi-fi", "wifi", "bluetooth", "hotspot", "network"],
         response: "<strong>Rule E301 (Wireless Rule):</strong> Teams may not set up their own Wi-Fi access points, ad-hoc networks, mobile hotspots, or custom wireless communications networks using 2.4GHz or 5GHz bands in the venue. Standard Bluetooth devices can also cause interference and are banned near the fields."
       },
       {
-        keywords: ["e504", "grinder", "flame", "welding", "torch"],
+        keywords: ["e504", "grinder", "flame", "welding", "torch", "spark"],
         response: "<strong>Rule E504 (Open Flames & Tools):</strong> Tools that throw sparks or produce open flames are prohibited. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters used briefly to melt frayed rope edges are generally acceptable."
       },
       {
-        keywords: ["e505", "3d printer", "machinery", "pit tool"],
+        keywords: ["e505", "3d printer", "machinery", "pit tool", "drill press"],
         response: "<strong>Rule E505 (Pit Machinery):</strong> Only small benchtop machinery that can be easily lifted by one single person is permitted inside your pit space (e.g., 3D printers, small band saws, desktop CNC mills). Floor-standing power tools are completely banned."
       },
       {
-        keywords: ["point", "score", "inspire", "award"],
+        keywords: ["point", "score", "inspire", "award", "rank"],
         response: "<strong>Section 4.1 (Advancement Points):</strong><br>• Inspire Award 1st Place = 60 Points<br>• Inspire Award 2nd Place = 30 Points<br>• Inspire Award 3rd Place = 15 Points<br>• Other Judged Awards (1st Place) = 12 Points<br>• Playoff Tournament Winners = 40 Points"
       }
     ];
@@ -156,13 +155,11 @@
       const text = inputEl.value.trim().toLowerCase();
       if (!text) return;
 
-      // Render user text bubble
       appendMessage(inputEl.value.trim(), 'user');
       inputEl.value = '';
 
       let foundResponse = "";
 
-      // Check user input against keyword database rows
       for (let item of automatedAnswers) {
         let match = item.keywords.some(word => text.includes(word));
         if (match) {
@@ -171,12 +168,10 @@
         }
       }
 
-      // Default helper reply if no keywords match perfectly
       if (!foundResponse) {
         foundResponse = "I couldn't find an exact match for that question. Try asking specifically about phrases like: <strong>'safety glasses'</strong>, <strong>'check in'</strong>, <strong>'wi-fi'</strong>, <strong>'3d printer'</strong>, or specific rule numbers like <strong>'E101'</strong> or <strong>'I102'</strong>!";
       }
 
-      // Append matched response block with a tiny automated delay
       setTimeout(() => {
         appendMessage(foundResponse, 'ai');
       }, 300);
