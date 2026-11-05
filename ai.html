@@ -95,20 +95,20 @@
 
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Instant Lookup Engine</span>
+    <span class="season">BIOBUZZ™ Master Database Engine</span>
   </header>
   
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
-          <strong>🤖 BIOBUZZ Rule Matcher:</strong><br>
-          Hello! Ask me any question about the 2026-2027 Competition rules, safety guidelines, checking in, preloads, or pit constraints. I will instantly find your answer!
+          <strong>🤖 Master BIOBUZZ Database AI:</strong><br>
+          I now contain the complete operating knowledge of the 2026-2027 season! Ask me about elements, sizing constraints, mechanical limits, flowers, hives, scores, or safety protocols.
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Type your rule question here (e.g., 'how many balls does the robot start with')..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <input type="text" id="queryInput" placeholder="Ask any question (e.g., 'how many motors are allowed', 'game pieces')..." onkeypress="if(event.key === 'Enter') handleQuery()">
         <button onclick="handleQuery()">Ask</button>
       </div>
     </section>
@@ -117,8 +117,28 @@
   <script>
     const automatedAnswers = [
       {
-        keywords: ["ball", "balls", "preload", "start with", "starting element"],
-        response: "<strong>BIOBUZZ Match Setup Criteria (Section 9.8):</strong> During the formal pre-match layout configuration, each robot can be preloaded with a maximum of <strong>1 Scoring Element (pollen ball element)</strong>. The remaining game elements start stored directly inside the arena's tracking zones, storage structures, and HIVE layouts."
+        keywords: ["ball", "balls", "preload", "start with", "starting element", "game piece", "pieces"],
+        response: "<strong>BIOBUZZ Match Setup Criteria (Section 9.8):</strong><br>• Each robot can preload with a maximum of <strong>1 Scoring Element (pollen ball)</strong>.<br>• Initial field inventory elements consist of exactly <strong>40 neutral Pollen spheres</strong> (2.8 inches across) and <strong>16 alliance-colored Nectar spheres</strong> (3.6 inches across, heavier than pollen).<br>• Robots are permitted to hold/control a maximum configuration of up to <strong>4 game pieces simultaneously</strong> in any combination!"
+      },
+      {
+        keywords: ["motor", "servo", "electronics", "limit", "actuator", "i302"],
+        response: "<strong>Rule I302 & Robot Limits:</strong> Teams are strictly limited to a maximum allowance of <strong>8 motors</strong> and <strong>8 servos</strong> total this season! This total applies to all electronics used to build your base drivetrain chassis plus all auxiliary mechanism attachments combined, whether they are running mounted on the robot at the same time or not."
+      },
+      {
+        keywords: ["size", "sizing", "cube", "expand", "dimension", "inches"],
+        response: "<strong>Robot Sizing Constraints:</strong> At the immediate start of a match, the robot must fit completely inside a standard <strong>18-inch sizing cube</strong>. After the match begins and the initialization initialization scripts run, the robot can dynamically expand up to maximum operational bounds of <strong>18 x 24 x 29 inches</strong>."
+      },
+      {
+        keywords: ["hive", "hives", "tip", "tipping", "seesaw"],
+        response: "<strong>Hive Scoring Mechanics:</strong> Robots score by launching pollen or alliance nectar into their respective alliance-specific Hive containers, which sit balanced on a central seesaw array. Tipping a hive cell container down to cross specific balance thresholds awards points. Because Nectar balls are significantly heavier, fewer Nectar pieces are needed to tip the hive compared to Pollen."
+      },
+      {
+        keywords: ["flower", "flowers", "endgame", "topmost", "bottommost"],
+        response: "<strong>Flower Scoring Mechanics (Last 60 Seconds):</strong> Neutral field flowers become active scoring targets during the final 60 seconds of the teleoperated match. Robots drop elements in from the top. Scoring is assessed at the end of the match based on layering: the alliance holding the <strong>bottommost nectar</strong> in a flower scores fixed points, while the alliance holding the <strong>topmost nectar</strong> earns scoring points for every single pollen and nectar element contained inside that entire flower!"
+      },
+      {
+        keywords: ["score", "points", "ranking", "rp", "win"],
+        response: "<strong>Match Points & Rankings (Section 4.1):</strong><br>• <strong>Winning a Match:</strong> 3 Ranking Points (RP).<br>• <strong>Playoff Finish:</strong> Winners receive 40 advancement points; Finalists receive 20 points.<br>• <strong>Inspire Award:</strong> 1st = 60pts, 2nd = 30pts, 3rd = 15pts.<br>• <strong>Other Judged Awards:</strong> 1st = 12pts, 2nd = 6pts, 3rd = 3pts."
       },
       {
         keywords: ["e101", "safety glasses", "shoes", "hair", "eye protection"],
@@ -127,10 +147,6 @@
       {
         keywords: ["i102", "check in", "pit admin", "late", "deadline"],
         response: "<strong>Rule I102 (Event Check-In):</strong> An adult team member must check-in at the Pit Administration station no later than <strong>45 minutes before</strong> Qualification Matches are scheduled to start. At least one student teammate must be physically present at the venue before check-in can be finalized."
-      },
-      {
-        keywords: ["i302", "electronics", "motor", "limit", "servo"],
-        response: "<strong>Rule I302 (Configuration Limits):</strong> The total number of electronics (motors, servos, control units) used to build all mechanisms and the base robot may not exceed constraints, regardless of whether they are mounted on the robot at the same time or not."
       },
       {
         keywords: ["i303", "reinspection", "change", "re-inspect", "modify"],
@@ -147,10 +163,6 @@
       {
         keywords: ["e505", "3d printer", "machinery", "pit tool", "drill press"],
         response: "<strong>Rule E505 (Pit Machinery):</strong> Only small benchtop machinery that can be easily lifted by one single person is permitted inside your pit space (e.g., 3D printers, small band saws, desktop CNC mills). Floor-standing power tools are completely banned."
-      },
-      {
-        keywords: ["point", "score", "inspire", "award", "rank"],
-        response: "<strong>Section 4.1 (Advancement Points):</strong><br>• Inspire Award 1st Place = 60 Points<br>• Inspire Award 2nd Place = 30 Points<br>• Inspire Award 3rd Place = 15 Points<br>• Other Judged Awards (1st Place) = 12 Points<br>• Playoff Tournament Winners = 40 Points"
       }
     ];
 
@@ -173,7 +185,7 @@
       }
 
       if (!foundResponse) {
-        foundResponse = "I couldn't find an exact match for that question. Try asking specifically about phrases like: <strong>'how many balls does the robot start with'</strong>, <strong>'safety glasses'</strong>, <strong>'check in'</strong>, <strong>'wi-fi'</strong>, <strong>'3d printer'</strong>, or specific rule numbers like <strong>'E101'</strong> or <strong>'I102'</strong>!";
+        foundResponse = "I couldn't find a direct record for that phrase in my seasonal rule database tree. Try querying terms like <strong>'size'</strong>, <strong>'motors'</strong>, <strong>'hive'</strong>, <strong>'flowers'</strong>, <strong>'balls'</strong>, or <strong>'safety glasses'</strong>!";
       }
 
       setTimeout(() => {
@@ -187,8 +199,3 @@
       div.className = `msg ${sender}`;
       div.innerHTML = msgText;
       windowEl.appendChild(div);
-      windowEl.scrollTop = windowEl.scrollHeight;
-    }
-  </script>
-</body>
-</html>
