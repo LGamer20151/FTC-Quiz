@@ -89,133 +89,107 @@
     .chat-input-wrapper button:hover {
       background: #3cb8f5;
     }
-
-    .key-modal {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(7, 17, 31, 0.95);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 16px;
-      border: 1px solid rgba(92, 200, 255, 0.3);
-      text-align: center;
-      max-width: 450px;
-      width: 100%;
-    }
   </style>
 </head>
 <body>
 
-  <div id="keyModal" class="key-modal">
-    <div class="modal-content">
-      <h3 style="color: #ff9f43; margin-top:0; font-size: 1.6rem;">Gemini API Configuration</h3>
-      <p style="font-size:0.95rem; color:#8fb7d8; line-height: 1.4;">Enter your Gemini API key from Google AI Studio to securely chat with the manual layout:</p>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." style="width:90%; padding:12px; margin: 15px 0; border-radius:8px; border:1px solid rgba(92,200,255,0.3); font-size:16px; color:#fff; background: rgba(0,0,0,0.3);">
-      <br>
-      <button onclick="saveApiKey()" style="background:#5cc8ff; color:#07111f; border:none; padding:12px 24px; font-weight:bold; border-radius:8px; cursor:pointer; font-size: 1rem;">Initialize Engine</button>
-    </div>
-  </div>
-
   <header class="topbar">
     <a class="brand" href="index.html">← Back to Dashboard</a>
-    <span class="season">BIOBUZZ™ Static Reference AI</span>
+    <span class="season">BIOBUZZ™ Instant Lookup Engine</span>
   </header>
   
   <main>
     <section class="chat-card">
       <div class="chat-window" id="chatWindow">
         <div class="msg ai">
-          <strong>🤖 BIOBUZZ Robot AI:</strong><br>
-          Rule Engine online! Ask me anything about the 2026-2027 Competition rules, safety margins, points, or inspection criteria
+          <strong>🤖 BIOBUZZ Rule Matcher:</strong><br>
+          Hello! Ask me any question about the 2026-2027 Competition rules, safety guidelines, checking in, or pit constraints. I will instantly find your answer!
         </div>
       </div>
 
       <div class="chat-input-wrapper">
-        <input type="text" id="queryInput" placeholder="Enter API Key first..." disabled onkeypress="if(event.key === 'Enter') handleQuery()">
-        <button id="sendBtn" onclick="handleQuery()" disabled>Send</button>
+        <input type="text" id="queryInput" placeholder="Type your rule question here (e.g., 'What is rule E101?')..." onkeypress="if(event.key === 'Enter') handleQuery()">
+        <button onclick="handleQuery()">Ask</button>
       </div>
     </section>
   </main>
 
   <script>
-    let userApiKey = "";
-
-    const manualContextDatabase = [
-      "Rule I101: Teams must be registered with FIRST and be 'competition ready' to earn points or judged awards. North America requires full team dashboard rosters, paid annual registration fee, and 2 YPP screened adult leads.",
-      "Rule I102: Check-in at the event on time. An adult team member must check-in at Pit Administration no later than 45 minutes before Qualification MATCHES are scheduled to start. At least one STUDENT must be present at the venue during check-in.",
-      "Rule I103: A responsible adult must be present for the whole event. At least 1, preferably 2, adult(s) responsible for the STUDENT team members must be present at all times.",
-      "Rule I301: Bring the complete ROBOT and supporting equipment to inspection. Teams should present the ROBOT and OPERATOR CONSOLE with all COMPONENTS, including decorative parts.",
-      "Rule I302: Total electronics configurations limits apply to all mechanisms and base chassis layout, whether they are running mounted on the robot at the same time or not.",
-      "Rule I303: Request re-inspection for most changes to the ROBOT. Re-inspection is NOT necessary for: A. Fasteners (cable ties, tape, rivets), B. Markings or labeling, C. Team SIGN configurations, D. Code revisions, E. Identical replacement components, F. Identical replacement mechanisms, G. Subsets of inspected mechanisms.",
-      "Rule E101: Personal safety comes first. Mandatory safety practices include: A. Safety glasses worn in specified areas (10-minute morning arrival grace window), B. Closed-toed/heeled shoes, C. Tie back long hair and dangling decorations (lanyards, spirit wear), D. Walk in the venue, E. Comply with health/safety codes.",
-      "Rule E102: Be Respectful. Uncivil behavior is prohibited. Examples of text infractions: 'weaponizing Gracious Professionalism' by calling out others, blocking viewing rows for extended periods, or insulting teammates.",
-      "Rule E103: Children under 12 must be accompanied in the pits by an adult at all times.",
-      "Rule E104: Respect the venue. No damage to bleachers, floors, walls. No littering with giveaways, candies, flyers, or stickers.",
-      "Rule E108: Prohibited items at events: Skateboards, hoverboards, drones, bottled gas tanks (helium), noisy devices/noisemakers (floor stompers, whistles, air horns), and scooters.",
-      "Rule E301: No custom wireless communication. Teams may not set up their own Wi-Fi networks, access points, mobile hotspots, or custom 2.4GHz / 5GHz wireless channels in the venue.",
-      "Rule E504: Open flames and spark-emitting devices are limited and tightly controlled. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters to melt strings are allowed.",
-      "Rule E505: Only small benchtop machinery easily lifted by one person is permitted in team pits (3D printers, small band saws, small drill presses, desktop CNC mills). Floor-standing power tools are prohibited.",
-      "Rule E506 & E507: Brazing and welding are completely prohibited. Soldering is allowed using an electric iron or gun only.",
-      "Section 4.1 & Table 4-1 Point Allocations: Inspire Award 1st Place = 60 points, 2nd Place = 30 points, 3rd Place = 15 points. Other Judged Awards: 1st Place = 12 points, 2nd Place = 6 points, 3rd Place = 3 points. Playoff Advancement Winners get 40 points, Finalists get 20 points."
+    // Hardcoded Rule Database that triggers on keyword patterns or exact codes
+    const automatedAnswers = [
+      {
+        keywords: ["e101", "safety glasses", "shoes", "hair"],
+        response: "<strong>Rule E101 (Personal Safety):</strong> All team members must wear safety glasses in specified areas (with a 10-minute morning grace window). Closed-toed/heeled shoes are strictly mandatory. Long hair and dangling items (like lanyards) must be tied back while working on the robot."
+      },
+      {
+        keywords: ["i102", "check in", "pit admin", "late"],
+        response: "<strong>Rule I102 (Event Check-In):</strong> An adult team member must check-in at the Pit Administration station no later than <strong>45 minutes before</strong> Qualification Matches are scheduled to start. At least one student teammate must be physically present at the venue before check-in can be finalized."
+      },
+      {
+        keywords: ["i302", "electronics", "motor", "limit"],
+        response: "<strong>Rule I302 (Configuration Limits):</strong> The total number of electronics (motors, servos, control units) used to build all mechanisms and the base robot may not exceed constraints, regardless of whether they are mounted on the robot at the same time or not."
+      },
+      {
+        keywords: ["i303", "reinspection", "change", "re-inspect"],
+        response: "<strong>Rule I303 (Re-inspection Rules):</strong> Most changes require re-inspection. However, it is <strong>NOT necessary</strong> for replacing identical components, modifying code, switching identical mechanisms, or editing fasteners (tape, zip ties, rivets)."
+      },
+      {
+        keywords: ["e301", "wi-fi", "wifi", "bluetooth", "hotspot"],
+        response: "<strong>Rule E301 (Wireless Rule):</strong> Teams may not set up their own Wi-Fi access points, ad-hoc networks, mobile hotspots, or custom wireless communications networks using 2.4GHz or 5GHz bands in the venue. Standard Bluetooth devices can also cause interference and are banned near the fields."
+      },
+      {
+        keywords: ["e504", "grinder", "flame", "welding", "torch"],
+        response: "<strong>Rule E504 (Open Flames & Tools):</strong> Tools that throw sparks or produce open flames are prohibited. Prohibited tools include welders, angle grinders, bench grinders, and gas torches. Lighters used briefly to melt frayed rope edges are generally acceptable."
+      },
+      {
+        keywords: ["e505", "3d printer", "machinery", "pit tool"],
+        response: "<strong>Rule E505 (Pit Machinery):</strong> Only small benchtop machinery that can be easily lifted by one single person is permitted inside your pit space (e.g., 3D printers, small band saws, desktop CNC mills). Floor-standing power tools are completely banned."
+      },
+      {
+        keywords: ["point", "score", "inspire", "award"],
+        response: "<strong>Section 4.1 (Advancement Points):</strong><br>• Inspire Award 1st Place = 60 Points<br>• Inspire Award 2nd Place = 30 Points<br>• Inspire Award 3rd Place = 15 Points<br>• Other Judged Awards (1st Place) = 12 Points<br>• Playoff Tournament Winners = 40 Points"
+      }
     ];
 
-    function saveApiKey() {
-      const key = document.getElementById('apiKeyInput').value.trim();
-      if(!key) { alert("Please input your Gemini API Key."); return; }
-      userApiKey = key;
-      document.getElementById('keyModal').style.display = 'none';
-      document.getElementById('queryInput').disabled = false;
-      document.getElementById('queryInput').placeholder = "Ask a rule question...";
-      document.getElementById('sendBtn').disabled = false;
-    }
-
-    function extractContext(query) {
-      const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-      if(words.length === 0) return manualContextDatabase.slice(0, 4).join("\n");
-      
-      let matches = manualContextDatabase.map(text => {
-        let score = 0;
-        words.forEach(w => { if(text.toLowerCase().includes(w)) score++; });
-        return { text, score };
-      });
-      
-      matches.sort((a, b) => b.score - a.score);
-      return matches.slice(0, 5).map(m => m.text).join("\n");
-    }
-
-    async function handleQuery() {
+    function handleQuery() {
       const inputEl = document.getElementById('queryInput');
-      const text = inputEl.value.trim();
+      const text = inputEl.value.trim().toLowerCase();
       if (!text) return;
 
-      appendMessage(text, 'user');
+      // Render user text bubble
+      appendMessage(inputEl.value.trim(), 'user');
       inputEl.value = '';
 
-      const loadNode = appendMessage('Searching manual indexes...', 'ai');
+      let foundResponse = "";
 
-      try {
-        const structuralContext = extractContext(text);
-        const systemInstruction = "You are an expert AI specialized in the 2026-2027 FTC Competition Manual (BIOBUZZ). Provide precise rule code citations (e.g. E101, I302). Rely strictly on the context provided.";
+      // Check user input against keyword database rows
+      for (let item of automatedAnswers) {
+        let match = item.keywords.some(word => text.includes(word));
+        if (match) {
+          foundResponse = item.response;
+          break;
+        }
+      }
 
-        // Secure, direct client connection hitting Google's native parsing framework 
-        const urlEndpoint = "https://googleapis.com" + userApiKey;
-        const res = await fetch(urlEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: "MANUAL CONTEXT DATA:\n" + structuralContext + "\n\nUSER QUESTION:\n" + text }] }],
-            systemInstruction: { parts: [{ text: systemInstruction }] },
-            generationConfig: { temperature: 0.1 }
-          })
-        });
+      // Default helper reply if no keywords match perfectly
+      if (!foundResponse) {
+        foundResponse = "I couldn't find an exact match for that question. Try asking specifically about phrases like: <strong>'safety glasses'</strong>, <strong>'check in'</strong>, <strong>'wi-fi'</strong>, <strong>'3d printer'</strong>, or specific rule numbers like <strong>'E101'</strong> or <strong>'I102'</strong>!";
+      }
 
-        const data = await res.json();
+      // Append matched response block with a tiny automated delay
+      setTimeout(() => {
+        appendMessage(foundResponse, 'ai');
+      }, 300);
+    }
 
-        if (data.error) {
+    function appendMessage(msgText, sender) {
+      const windowEl = document.getElementById('chatWindow');
+      const div = document.createElement('div');
+      div.className = `msg ${sender}`;
+      div.innerHTML = msgText;
+      windowEl.appendChild(div);
+      windowEl.scrollTop = windowEl.scrollHeight;
+    }
+  </script>
+</body>
+</html>
